@@ -60,7 +60,7 @@ const handleMessage = (chatId, messageText) => {
   sendMessage(chatId, messageText);
 };
 
-const handleWithoutMemberShip = () => {
+const handleWithoutMemberShip = (chatId) => {
   return sendInlineKeyboard(chatId, JSONMessage.JOIN_CHANNEL, [
     [
       {

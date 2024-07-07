@@ -13,7 +13,7 @@ const {
 } = require("./handleMessage");
 
 bot.on("polling_error", (error) => {
-  console.error("Polling Error Occured: ", error);
+  console.error(`Polling Error Occured: ${error.message}`, error);
   // process.exit(1);
 });
 
@@ -57,10 +57,9 @@ bot.on("sticker", (sticker) => {
 bot.on("callback_query", async (callbackQuery) => {
   const { message: messageObj, data } = callbackQuery;
   const chatId = messageObj.chat.id;
+  let responseTextToSend = "";
+  let keyboardToSend = [];
   try {
-    let responseTextToSend = "";
-    let keyboardToSend = [];
-
     switch (data) {
       case "dashboard":
         // responseTextToSend = "Showing dashboard...";
