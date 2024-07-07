@@ -1,3 +1,4 @@
+const { saveMemberDataToDB } = require("../Model/userModel.js");
 const keyboard = require("../keyBoard");
 const JSONMessage = require("../message");
 const bot = require("./createBot");
@@ -7,37 +8,30 @@ const {
   getMessageDetails,
   handleMessage,
   checkMembership,
-  sendInlineKeyboard,
+  handleWithoutMemberShip,
+  showDashboardDetails,
 } = require("./handleMessage");
 
 bot.on("polling_error", (error) => {
   console.error("Polling Error Occured: ", error);
-  process.exit(1);
+  // process.exit(1);
 });
 
 bot.on("error", (error) => {
   console.error("Normal Error Occured: ", error);
-  process.exit(1);
+  // process.exit(1);
 });
 
 bot.on("text", async (msg) => {
-  const { userId, chatId, messageText } = getMessageDetails(msg);
+  const { chatId, messageText, name } = getMessageDetails(msg);
   try {
-    const isMember = await checkMembership(userId);
+    const isMember = await checkMembership(chatId);
 
     if (!isMember) {
-      return sendInlineKeyboard(chatId, JSONMessage.JOIN_CHANNEL, [
-        [
-          {
-            text: "Join Channel",
-            url: `https://t.me/${process.env.CHANNEL_USERNAME.replace(
-              "@",
-              ""
-            )}`,
-          },
-        ],
-      ]);
+      return handleWithoutMemberShip(chatId);
     }
+
+    await saveMemberDataToDB(chatId, name);
 
     if (messageText.startsWith("/")) {
       handleCommands(messageText.split("/")[1], chatId);
@@ -69,8 +63,9 @@ bot.on("callback_query", async (callbackQuery) => {
 
     switch (data) {
       case "dashboard":
-        responseTextToSend = "Showing dashboard...";
-        // Implement logic for dashboard action
+        // responseTextToSend = "Showing dashboard...";
+        // // Implement logic for dashboard action
+        showDashboardDetails(chatId);
         break;
       case "faq":
         responseTextToSend = "Fetching FAQ...";
@@ -85,7 +80,7 @@ bot.on("callback_query", async (callbackQuery) => {
         keyboardToSend = keyboard.START_MESSAGE_KEYBOARD;
     }
 
-    sendInlineKeyboard(chatId, responseText, keyboardToSend);
+    // sendInlineKeyboard(chatId, responseTextToSend, keyboardToSend);
   } catch (error) {
     console.error("Error processing callback query:", error.message);
     handleError(chatId, "Callback Query", error);

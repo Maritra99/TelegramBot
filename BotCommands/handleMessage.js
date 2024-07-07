@@ -8,11 +8,10 @@ const sendMessage = (chatId, messageText, inlineKeyboard) => {
 
 const getMessageDetails = (msg) => {
   const {
-    chat: { id: chatId },
+    chat: { id: chatId, first_name, last_name },
     text: messageText,
-    from: { id: userId },
   } = msg;
-  return { userId, chatId, messageText };
+  return { chatId, messageText, name: first_name + " " + last_name };
 };
 
 const checkMembership = async (userId) => {
@@ -61,6 +60,25 @@ const handleMessage = (chatId, messageText) => {
   sendMessage(chatId, messageText);
 };
 
+const handleWithoutMemberShip = () => {
+  return sendInlineKeyboard(chatId, JSONMessage.JOIN_CHANNEL, [
+    [
+      {
+        text: "Join Channel",
+        url: `https://t.me/${process.env.CHANNEL_USERNAME.replace("@", "")}`,
+      },
+    ],
+  ]);
+};
+
+const showDashboardDetails = (chatId) => {
+  const message =
+    "🌟 Welcome to the 12% Interest Bot! 🚀\n\nHere's your current investment overview:\n\n-Total Invested Amount: 10000 💵\n- Current Balance: 10020 💰\n- Accrued Interest: 20 📈\n\nFeel free to explore your investments and manage them efficiently with our bot. If you have any questions or need assistance, just type 'Help'!";
+  const keyBoard = [];
+
+  sendInlineKeyboard(chatId, message, keyBoard);
+};
+
 module.exports = {
   sendMessage,
   getMessageDetails,
@@ -68,4 +86,6 @@ module.exports = {
   handleMessage,
   checkMembership,
   sendInlineKeyboard,
+  handleWithoutMemberShip,
+  showDashboardDetails,
 };

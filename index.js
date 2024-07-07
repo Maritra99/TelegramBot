@@ -1,8 +1,12 @@
+const { connectDB } = require("./DB/dbConnection");
+
 require("dotenv").config({ path: "./.env" });
-require("./BotCommands/controller")
+require("./BotCommands/controller");
 const app = require("express")();
 
 const PORT = process.env.PORT || 8081;
+
+connectDB();
 
 app.get("/", (req, res) => {
   try {
