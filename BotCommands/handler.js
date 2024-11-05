@@ -1,6 +1,7 @@
 const keyboard = require("../keyBoard");
 const JSONMessage = require("../message");
 const bot = require("./createBot");
+// const queryString = require("query-string");
 
 const sendMessage = (chatId, messageText, inlineKeyboard) => {
   bot.sendMessage(chatId, messageText, inlineKeyboard);
@@ -79,6 +80,38 @@ const showDashboardDetails = (chatId) => {
   sendInlineKeyboard(chatId, message, keyBoard);
 };
 
+// function encrypt(text) {
+//   let encryptedText = "";
+//   const key = "encryptkey";
+//   for (let i = 0; i < text.length; i++) {
+//     let charCode = text.charCodeAt(i);
+//     let keyChar = key.charCodeAt(i % key.length);
+//     encryptedText += String.fromCharCode(charCode ^ keyChar);
+//   }
+//   return Buffer.from(encryptedText, "binary").toString("base64");
+// }
+
+function encodeObject(obj) {
+  const jsonStr = JSON.stringify(obj);
+  const encoded = btoa(jsonStr);
+  return encoded;
+}
+
+// Example of sending a message with a button that redirects to a website with data
+const sendRedirectButton = async (chatId, data) => {
+  const params = encodeObject(data);
+  const url = `https://demo-payment-integration.onrender.com/?data=${params}`;
+  const buttons = [
+    [
+      {
+        text: "Go to Website",
+        url: url,
+      },
+    ],
+  ];
+  sendInlineKeyboard(chatId, "Click the button to go to the website.", buttons);
+};
+
 module.exports = {
   sendMessage,
   getMessageDetails,
@@ -88,4 +121,5 @@ module.exports = {
   sendInlineKeyboard,
   handleWithoutMemberShip,
   showDashboardDetails,
+  sendRedirectButton,
 };

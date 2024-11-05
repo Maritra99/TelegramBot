@@ -10,7 +10,7 @@ const {
   checkMembership,
   handleWithoutMemberShip,
   showDashboardDetails,
-} = require("./handleMessage");
+} = require("./handler");
 
 bot.on("polling_error", (error) => {
   console.error(`Polling Error Occured: ${error.message}`, error);

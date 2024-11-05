@@ -1,4 +1,4 @@
-const { sendMessage } = require("./handleMessage");
+const { sendMessage } = require("./handler");
 
 const handleError = (chatId, methodName, err) => {
   console.error(
