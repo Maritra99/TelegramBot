@@ -1,13 +1,25 @@
-const keyboard = require("../keyBoard");
-const JSONMessage = require("../message");
+const keyboard = require("../Static/keyBoard");
+const JSONMessage = require("../Static/message");
+const renderMessage = require("../Static/renderMessage");
 const bot = require("./createBot");
-// const queryString = require("query-string");
 
-const sendMessage = (chatId, messageText, inlineKeyboard) => {
-  bot.sendMessage(chatId, messageText, inlineKeyboard);
+exports.sendMessage = (chatId, messageText, inlineKeyboard) => {
+  bot.sendMessage(chatId, messageText, {
+    parse_mode: "Markdown",
+    reply_markup: inlineKeyboard?.reply_markup || undefined,
+  });
 };
 
-const getMessageDetails = (msg) => {
+exports.sendInlineKeyboard = (chatId, messageText, buttons) => {
+  const inlineKeyboard = {
+    reply_markup: {
+      inline_keyboard: buttons,
+    },
+  };
+  this.sendMessage(chatId, messageText, inlineKeyboard);
+};
+
+exports.getMessageDetails = (msg) => {
   const {
     chat: { id: chatId, first_name, last_name },
     text: messageText,
@@ -15,7 +27,7 @@ const getMessageDetails = (msg) => {
   return { chatId, messageText, name: first_name + " " + last_name };
 };
 
-const checkMembership = async (userId) => {
+exports.checkMembership = async (userId) => {
   try {
     const chatMember = await bot.getChatMember(
       process.env.CHANNEL_USERNAME,
@@ -28,77 +40,86 @@ const checkMembership = async (userId) => {
   }
 };
 
-const sendInlineKeyboard = (chatId, messageText, buttons) => {
-  const inlineKeyboard = {
-    reply_markup: {
-      inline_keyboard: buttons,
-    },
-  };
-  sendMessage(chatId, messageText, inlineKeyboard);
-};
-
-const handleStartMessage = (chatId) => {
-  return sendInlineKeyboard(
+exports.handleStartMessage = (chatId) => {
+  return this.sendInlineKeyboard(
     chatId,
-    JSONMessage.START_MESSAGE,
+    renderMessage(JSONMessage.START_MESSAGE, { amount: 12 }),
     keyboard.START_MESSAGE_KEYBOARD
   );
 };
 
-const handleCommands = (command, chatId) => {
+exports.handleCommands = (command, chatId) => {
   switch (command) {
     case "start":
-      handleStartMessage(chatId);
+      this.handleStartMessage(chatId);
       break;
 
     default:
-      sendMessage(chatId, "Unknown Command For Me");
+      this.sendMessage(chatId, "Unknown Command For Me");
       break;
   }
 };
 
-const handleMessage = (chatId, messageText) => {
-  sendMessage(chatId, messageText);
+exports.handleMessage = (chatId, messageText) => {
+  this.sendMessage(chatId, messageText);
 };
 
-const handleWithoutMemberShip = (chatId) => {
-  return sendInlineKeyboard(chatId, JSONMessage.JOIN_CHANNEL, [
+exports.handleWithoutMemberShip = (chatId) => {
+  return this.sendInlineKeyboard(
+    chatId,
+    renderMessage(JSONMessage.JOIN_CHANNEL),
     [
-      {
-        text: "Join Channel",
-        url: `https://t.me/${process.env.CHANNEL_USERNAME.replace("@", "")}`,
-      },
-    ],
-  ]);
+      [
+        {
+          text: "Join Channel",
+          url: `https://t.me/${process.env.CHANNEL_USERNAME.replace("@", "")}`,
+        },
+      ],
+    ]
+  );
 };
 
-const showDashboardDetails = (chatId) => {
-  const message =
-    "🌟 Welcome to the 12% Interest Bot! 🚀\n\nHere's your current investment overview:\n\n-Total Invested Amount: 10000 💵\n- Current Balance: 10020 💰\n- Accrued Interest: 20 📈\n\nFeel free to explore your investments and manage them efficiently with our bot. If you have any questions or need assistance, just type 'Help'!";
+exports.showDashboardDetails = (chatId) => {
+  const message = renderMessage(JSONMessage.DASHBOARD_MESSAGE);
   const keyBoard = [];
 
-  sendInlineKeyboard(chatId, message, keyBoard);
+  this.sendInlineKeyboard(chatId, message, keyBoard);
 };
 
-// function encrypt(text) {
-//   let encryptedText = "";
-//   const key = "encryptkey";
-//   for (let i = 0; i < text.length; i++) {
-//     let charCode = text.charCodeAt(i);
-//     let keyChar = key.charCodeAt(i % key.length);
-//     encryptedText += String.fromCharCode(charCode ^ keyChar);
-//   }
-//   return Buffer.from(encryptedText, "binary").toString("base64");
-// }
+exports.showPlanDetails = (chatId) => {
+  const message = renderMessage(JSONMessage.PLAN_MESSAGE);
+  const keyBoard = keyboard.PLANS_KEYBOARD;
 
-function encodeObject(obj) {
-  const jsonStr = JSON.stringify(obj);
-  const encoded = btoa(jsonStr);
-  return encoded;
-}
+  this.sendInlineKeyboard(chatId, message, keyBoard);
+};
 
-// Example of sending a message with a button that redirects to a website with data
-const sendRedirectButton = async (chatId, data) => {
+exports.handlePlan1 = (chatId) => {
+  const message = renderMessage(JSONMessage.PLAN_1_MESSAGE);
+  const keyBoard = keyboard.PLAN_1_KEYBOARD;
+  this.sendInlineKeyboard(chatId, message, keyBoard);
+};
+
+exports.handlePlan2 = (chatId) => {
+  const message = renderMessage(JSONMessage.PLAN_2_MESSAGE);
+  const keyBoard = keyboard.PLAN_2_KEYBOARD;
+  this.sendInlineKeyboard(chatId, message, keyBoard);
+};
+
+exports.handlePlan3 = (chatId) => {
+  const message = renderMessage(JSONMessage.PLAN_3_MESSAGE);
+  const keyBoard = keyboard.PLAN_3_KEYBOARD;
+  this.sendInlineKeyboard(chatId, message, keyBoard);
+};
+
+exports.investInPlan1 = (chatId) => {
+  const message = renderMessage(JSONMessage.PLAN_3_MESSAGE);
+  const keyBoard = keyboard.PLAN_3_KEYBOARD;
+  this.sendInlineKeyboard(chatId, message, keyBoard);
+};
+exports.investInPlan2 = (chatId) => {};
+exports.investInPlan3 = (chatId) => {};
+
+exports.sendRedirectButton = async (chatId, data) => {
   const params = encodeObject(data);
   const url = `https://demo-payment-integration.onrender.com/?data=${params}`;
   const buttons = [
@@ -109,17 +130,9 @@ const sendRedirectButton = async (chatId, data) => {
       },
     ],
   ];
-  sendInlineKeyboard(chatId, "Click the button to go to the website.", buttons);
-};
-
-module.exports = {
-  sendMessage,
-  getMessageDetails,
-  handleCommands,
-  handleMessage,
-  checkMembership,
-  sendInlineKeyboard,
-  handleWithoutMemberShip,
-  showDashboardDetails,
-  sendRedirectButton,
+  this.sendInlineKeyboard(
+    chatId,
+    "Click the button to go to the website.",
+    buttons
+  );
 };

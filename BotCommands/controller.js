@@ -1,16 +1,7 @@
 const { saveMemberDataToDB } = require("../Model/userModel.js");
-const keyboard = require("../keyBoard");
-const JSONMessage = require("../message");
 const bot = require("./createBot");
 const { handleError } = require("./handleError");
-const {
-  handleCommands,
-  getMessageDetails,
-  handleMessage,
-  checkMembership,
-  handleWithoutMemberShip,
-  showDashboardDetails,
-} = require("./handler");
+const handler = require("./handler");
 
 bot.on("polling_error", (error) => {
   console.error(`Polling Error Occured: ${error.message}`, error);
@@ -23,20 +14,20 @@ bot.on("error", (error) => {
 });
 
 bot.on("text", async (msg) => {
-  const { chatId, messageText, name } = getMessageDetails(msg);
+  const { chatId, messageText, name } = handler.getMessageDetails(msg);
   try {
-    const isMember = await checkMembership(chatId);
+    const isMember = await handler.checkMembership(chatId);
 
     if (!isMember) {
-      return handleWithoutMemberShip(chatId);
+      return handler.handleWithoutMemberShip(chatId);
     }
 
     await saveMemberDataToDB(chatId, name);
 
     if (messageText.startsWith("/")) {
-      handleCommands(messageText.split("/")[1], chatId);
+      handler.handleCommands(messageText.split("/")[1], chatId);
     } else {
-      handleMessage(chatId, messageText);
+      handler.handleMessage(chatId, messageText);
     }
   } catch (error) {
     console.error("Error processing text message:", error.message);
@@ -47,7 +38,7 @@ bot.on("text", async (msg) => {
 bot.on("sticker", (sticker) => {
   const { chatId } = sticker;
   try {
-    handleMessage(chatId, sticker);
+    handler.handleMessage(chatId, sticker);
   } catch (error) {
     console.error("Error processing sticker:", error.message);
     handleError(chatId, "Sticker Webhook", error);
@@ -57,29 +48,39 @@ bot.on("sticker", (sticker) => {
 bot.on("callback_query", async (callbackQuery) => {
   const { message: messageObj, data } = callbackQuery;
   const chatId = messageObj.chat.id;
-  let responseTextToSend = "";
-  let keyboardToSend = [];
   try {
     switch (data) {
       case "dashboard":
-        // responseTextToSend = "Showing dashboard...";
-        // // Implement logic for dashboard action
-        showDashboardDetails(chatId);
+        handler.showDashboardDetails(chatId);
+        break;
+      case "view_plans":
+        handler.showPlanDetails(chatId);
         break;
       case "faq":
-        responseTextToSend = "Fetching FAQ...";
-        // Implement logic for FAQ action
         break;
       case "privacy_policy":
-        responseTextToSend = "Displaying Privacy Policy...";
-        // Implement logic for Privacy Policy action
+        break;
+      case "select_plan_1":
+        handler.handlePlan1(chatId);
+        break;
+      case "select_plan_2":
+        handler.handlePlan2(chatId);
+        break;
+      case "select_plan_3":
+        handler.handlePlan3(chatId);
+        break;
+      case "invest_plan_1":
+        handler.investInPlan1(chatId);
+        break;
+      case "invest_plan_2":
+        handler.investInPlan2(chatId);
+        break;
+      case "invest_plan_3":
+        handler.investInPlan3(chatId);
         break;
       default:
-        responseTextToSend = JSONMessage.UNKNOWN_BUTTON;
-        keyboardToSend = keyboard.START_MESSAGE_KEYBOARD;
+        throw Error("Unknown Callback Query");
     }
-
-    // sendInlineKeyboard(chatId, responseTextToSend, keyboardToSend);
   } catch (error) {
     console.error("Error processing callback query:", error.message);
     handleError(chatId, "Callback Query", error);
