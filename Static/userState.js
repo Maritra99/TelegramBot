@@ -12,6 +12,8 @@ exports.userState = {
   confirm_amount: "CLICKED_CONFIRM_AMOUNT",
   cancel_amount: "CLICKED_CANCEL_AMOUNT",
   restart_process: "CLICKED_RESTART",
+  payment_successful: "PAYMENT_SUCCESSFUL",
+  payment_failed: "PAYMENT_FAILED",
 
   STARTING_BOT: "STARTING_BOT",
   ENTERED_AMOUNT_TO_INVEST: "ENTERED_AMOUNT_TO_INVEST",

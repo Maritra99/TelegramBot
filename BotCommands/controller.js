@@ -51,6 +51,8 @@ bot.on("callback_query", async (callbackQuery) => {
 
   if (userState[data]) {
     userModel.saveUserState(chatId, userState[data]);
+  } else {
+    console.error("User State Missing for ", data);
   }
 
   try {
@@ -85,6 +87,14 @@ bot.on("callback_query", async (callbackQuery) => {
         break;
       case "restart_process":
         handler.handleRestart(chatId);
+        break;
+      case "payment_successful":
+        break;
+      case "payment_failed":
+        break;
+      case "settings":
+        break;
+      case "contact_us":
         break;
       default:
         throw Error("Unknown Callback Query");

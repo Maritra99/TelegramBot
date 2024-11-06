@@ -25,7 +25,10 @@ JSONMessage.PLAN_2_CONFIRMATION_MESSAGE =
 JSONMessage.PLAN_3_CONFIRMATION_MESSAGE =
   "🎉 You've selected Plan 3! 🎉\n\n💰 Investment Amount: {amount}\n\n📈 Expected Profit: 18%\n\n⏳ Duration: 90 days\n\nAre you ready to proceed with this investment? 🤔\n\n🔸 Please click below to confirm your decision!";
 
-JSONMessage.PAYMENT_REQUEST_MESSAGE = "Please Make a payment of rs {amount}";
+JSONMessage.PAYMENT_REQUEST_MESSAGE =
+  "📝 **Payment Details**\n\n💳 **UPI ID:** {upiId}\n💰 **Amount:** ₹{amount}\n\nScan the QR code below to make the payment.";
+
+JSONMessage.TEXT_WITH_QR = "📷 *Scan this QR code to pay*";
 
 JSONMessage.GENERIC_ERROR_MESSAGE =
   "Oops! Something went wrong. This issue is reported to admin. Please try again later.";

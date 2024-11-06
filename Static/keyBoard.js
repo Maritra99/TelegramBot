@@ -34,7 +34,16 @@ keyboard.RESTART_KEYBOARD = [
 ];
 
 keyboard.PAYMENT_CONFIRMATION_KEY_BOARD = [
-  [{ text: "Payment Done", callback_data: "payment_done" }],
+  [
+    {
+      text: "✅ Payment Successful",
+      callback_data: "payment_successful",
+    },
+    {
+      text: "❌ Payment Failed",
+      callback_data: "payment_failed",
+    },
+  ],
 ];
 
 module.exports = keyboard;

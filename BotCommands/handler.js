@@ -6,12 +6,25 @@ const renderMessage = require("../Static/renderMessage");
 const { userState } = require("../Static/userState");
 const bot = require("./createBot");
 const errorHandler = require("./errorHandler");
+const utils = require("../Utils/generateQRCode");
 
 exports.sendMessage = (chatId, messageText, inlineKeyboard) => {
   bot.sendMessage(chatId, messageText, {
     parse_mode: "Markdown",
     reply_markup: inlineKeyboard?.reply_markup || undefined,
   });
+};
+
+exports.sendImage = (chatId, imagePath, caption) => {
+  bot.sendPhoto(
+    chatId,
+    imagePath,
+    {
+      caption: caption,
+      parse_mode: "Markdown",
+    },
+    { filename: "upi-qr", contentType: "image/jpeg" }
+  );
 };
 
 exports.sendInlineKeyboard = (chatId, messageText, buttons) => {
@@ -80,34 +93,35 @@ exports.handleMessage = async (chatId, messageText) => {
         userState.select_plan_3
       )
     ) {
-      const investmentAmount = parseFloat(messageText);
-
-      if (!isNaN(investmentAmount) && investmentAmount >= 50) {
-        await transanctionModel.updateTransaction(chatId, {
-          amount: investmentAmount,
-        });
-        await userModel.saveUserState(
-          chatId,
-          userState.ENTERED_AMOUNT_TO_INVEST
-        );
-        this.sendInlineKeyboard(
-          chatId,
-          renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE, {
-            amount: investmentAmount,
-          }),
-          keyboard.CONFIRM_KEY_BOARD
-        );
-      } else {
-        this.sendMessage(
-          chatId,
-          JSONMessage.AMOUNT_SHOULD_NOT_BE_LOWER_THAN_MINIMUM
-        );
-      }
+      this.handleEnteredPaymentAmount(chatId, messageText);
     }
   } catch (error) {
     await userModel.removeUserStateByChatID(chatId);
     await transanctionModel.removeTransactionByChatId(chatId);
     errorHandler.handleError(chatId, "handleMessage", error);
+  }
+};
+
+exports.handleEnteredPaymentAmount = async (chatId, messageText) => {
+  const investmentAmount = parseFloat(messageText);
+
+  if (!isNaN(investmentAmount) && investmentAmount >= 50) {
+    await transanctionModel.updateTransaction(chatId, {
+      amount: investmentAmount,
+    });
+    await userModel.saveUserState(chatId, userState.ENTERED_AMOUNT_TO_INVEST);
+    this.sendInlineKeyboard(
+      chatId,
+      renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE, {
+        amount: investmentAmount,
+      }),
+      keyboard.CONFIRM_KEY_BOARD
+    );
+  } else {
+    this.sendMessage(
+      chatId,
+      JSONMessage.AMOUNT_SHOULD_NOT_BE_LOWER_THAN_MINIMUM
+    );
   }
 };
 
@@ -169,15 +183,7 @@ exports.handleConfirmAmount = async (chatId) => {
   try {
     const data = await transanctionModel.fetchTransactionByChatId(chatId);
 
-    const paymentRequestMessage = renderMessage(
-      JSONMessage.PAYMENT_REQUEST_MESSAGE,
-      { amount: data.amount }
-    );
-    const keyBoard = keyboard.PAYMENT_CONFIRMATION_KEY_BOARD;
-
-    this.sendMessage(chatId, paymentRequestMessage);
-
-    this.sendInlineKeyboard(chatId, "message", keyBoard);
+    utils.sendUPIDetails(chatId, data.amount);
   } catch (error) {
     await userModel.removeUserStateByChatID(chatId);
     await transanctionModel.removeTransactionByChatId(chatId);

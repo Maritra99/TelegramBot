@@ -28,24 +28,27 @@ schema.userState = mongoose.Schema(
   { timestamps: true, collection: "userState" }
 );
 
-schema.transaction = mongoose.Schema({
-  chatId: {
-    type: String,
-    unique: true,
+schema.transaction = mongoose.Schema(
+  {
+    chatId: {
+      type: String,
+      unique: true,
+    },
+    plan: {
+      type: String,
+    },
+    amount: {
+      type: Number,
+    },
+    userPaymentState: {
+      type: String,
+    },
+    adminPaymentState: {
+      type: String,
+    },
   },
-  plan: {
-    type: String,
-  },
-  amount: {
-    type: Number,
-  },
-  userPaymentState: {
-    type: String,
-  },
-  adminPaymentState: {
-    type: String,
-  },
-});
+  { timestamps: true, collection: "userState" }
+);
 
 const model = {};
 
