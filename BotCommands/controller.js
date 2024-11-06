@@ -1,6 +1,6 @@
 const { saveMemberDataToDB } = require("../Model/userModel.js");
 const bot = require("./createBot");
-const { handleError } = require("./handleError");
+const { handleError } = require("./errorHandler.js");
 const handler = require("./handler");
 
 bot.on("polling_error", (error) => {
@@ -30,7 +30,6 @@ bot.on("text", async (msg) => {
       handler.handleMessage(chatId, messageText);
     }
   } catch (error) {
-    console.error("Error processing text message:", error.message);
     handleError(chatId, "Text Webhook", error);
   }
 });
@@ -61,13 +60,13 @@ bot.on("callback_query", async (callbackQuery) => {
       case "privacy_policy":
         break;
       case "select_plan_1":
-        handler.handlePlan1(chatId);
+        handler.handlePlan1Selection(chatId);
         break;
       case "select_plan_2":
-        handler.handlePlan2(chatId);
+        handler.handlePlan2Selection(chatId);
         break;
       case "select_plan_3":
-        handler.handlePlan3(chatId);
+        handler.handlePlan3Selection(chatId);
         break;
       case "invest_plan_1":
         handler.investInPlan1(chatId);

@@ -15,6 +15,45 @@ schema.user = mongoose.Schema(
   { timestamps: true, collection: "users" }
 );
 
+schema.userState = mongoose.Schema(
+  {
+    chatId: {
+      type: String,
+      unique: true,
+    },
+    state: {
+      type: String,
+    },
+    plan: {
+      type: String,
+    },
+  },
+  { timestamps: true, collection: "userState" }
+);
+
+schema.transaction = mongoose.Schema({
+  chatId: {
+    type: String,
+    unique: true,
+  },
+  plan: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  userPaymentState: {
+    type: String,
+    required: true,
+  },
+  adminPaymentState: {
+    type: String,
+    required: true,
+  },
+});
+
 const model = {};
 
 model.createModel = () => {

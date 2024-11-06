@@ -15,3 +15,49 @@ exports.saveMemberDataToDB = async (userId, name) => {
     throw new Error(error.message);
   }
 };
+
+exports.saveUserState = async (chatId, state, plan) => {
+  try {
+    return await model.userStateModel.findOneAndUpdate(
+      { chatId },
+      { state, plan },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+exports.findUserStateByChatID = async (chatId) => {
+  try {
+    return await model.userStateModel.findOne({ chatId });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+exports.removeUserStateByChatID = async (chatId) => {
+  try {
+    return await model.userStateModel.deleteOne({ chatId });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+exports.saveInitialTransaction = async (
+  chatId,
+  plan,
+  amount,
+  userPaymentState = "PENDING",
+  adminPaymentState = "PENDING"
+) => {
+  const newTransaction = new model.transactionModel({
+    chatId,
+    plan,
+    amount,
+    userPaymentState,
+    adminPaymentState,
+  });
+
+  await newTransaction.save();
+};

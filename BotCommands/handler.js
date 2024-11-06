@@ -1,7 +1,9 @@
+const model = require("../Model/userModel");
 const keyboard = require("../Static/keyBoard");
 const JSONMessage = require("../Static/message");
 const renderMessage = require("../Static/renderMessage");
 const bot = require("./createBot");
+const errorHandler = require("./errorHandler");
 
 exports.sendMessage = (chatId, messageText, inlineKeyboard) => {
   bot.sendMessage(chatId, messageText, {
@@ -60,8 +62,37 @@ exports.handleCommands = (command, chatId) => {
   }
 };
 
-exports.handleMessage = (chatId, messageText) => {
-  this.sendMessage(chatId, messageText);
+exports.handleMessage = async (chatId, messageText) => {
+  try {
+    const userState = await model.findUserStateByChatID(chatId);
+
+    if (!userState) {
+      return this.sendMessage(chatId, messageText);
+    }
+
+    if (userState.state === "Selection of Plan") {
+      const investmentAmount = parseFloat(messageText);
+
+      if (!isNaN(investmentAmount) && investmentAmount >= 50) {
+        await model.removeUserStateByChatID(chatId);
+        // await model.saveInitialTransaction(chatId);
+        this.sendInlineKeyboard(
+          chatId,
+          renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE, {
+            amount: investmentAmount,
+          }),
+          keyboard.CONFIRM_KEY_BOARD
+        );
+      } else {
+        this.sendMessage(
+          chatId,
+          JSONMessage.AMOUNT_SHOULD_NOT_BE_LOWER_THAN_MINIMUM
+        );
+      }
+    }
+  } catch (error) {
+    errorHandler.handleError(chatId, "handleMessage", error);
+  }
 };
 
 exports.handleWithoutMemberShip = (chatId) => {
@@ -93,29 +124,40 @@ exports.showPlanDetails = (chatId) => {
   this.sendInlineKeyboard(chatId, message, keyBoard);
 };
 
-exports.handlePlan1 = (chatId) => {
-  const message = renderMessage(JSONMessage.PLAN_1_MESSAGE);
-  const keyBoard = keyboard.PLAN_1_KEYBOARD;
-  this.sendInlineKeyboard(chatId, message, keyBoard);
+exports.handlePlan1Selection = async (chatId) => {
+  try {
+    const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
+
+    await model.saveUserState(chatId, "Selection of Plan", "Plan 1");
+
+    this.sendInlineKeyboard(chatId, message);
+  } catch (error) {
+    errorHandler.handleError(chatId, "handlePlan1Selection", error);
+  }
 };
 
-exports.handlePlan2 = (chatId) => {
-  const message = renderMessage(JSONMessage.PLAN_2_MESSAGE);
-  const keyBoard = keyboard.PLAN_2_KEYBOARD;
-  this.sendInlineKeyboard(chatId, message, keyBoard);
+exports.handlePlan2Selection = async (chatId) => {
+  const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
+
+  await model.saveUserState(chatId, "Selection of Plan", "Plan 2");
+
+  this.sendInlineKeyboard(chatId, message);
 };
 
-exports.handlePlan3 = (chatId) => {
-  const message = renderMessage(JSONMessage.PLAN_3_MESSAGE);
-  const keyBoard = keyboard.PLAN_3_KEYBOARD;
-  this.sendInlineKeyboard(chatId, message, keyBoard);
+exports.handlePlan3Selection = async (chatId) => {
+  const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
+
+  await model.saveUserState(chatId, "Selection of Plan", "Plan 3");
+
+  this.sendInlineKeyboard(chatId, message);
 };
 
 exports.investInPlan1 = (chatId) => {
-  const message = renderMessage(JSONMessage.PLAN_3_MESSAGE);
+  const message = renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE);
   const keyBoard = keyboard.PLAN_3_KEYBOARD;
   this.sendInlineKeyboard(chatId, message, keyBoard);
 };
+
 exports.investInPlan2 = (chatId) => {};
 exports.investInPlan3 = (chatId) => {};
 
