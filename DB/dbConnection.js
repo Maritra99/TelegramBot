@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const model = require("../schema");
+const model = require("../Model/schema");
 
 exports.connectDB = async () => {
   try {

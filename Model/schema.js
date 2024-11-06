@@ -24,9 +24,6 @@ schema.userState = mongoose.Schema(
     state: {
       type: String,
     },
-    plan: {
-      type: String,
-    },
   },
   { timestamps: true, collection: "userState" }
 );

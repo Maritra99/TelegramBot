@@ -3,6 +3,7 @@ const transanctionModel = require("../Model/transactionModel");
 const keyboard = require("../Static/keyBoard");
 const JSONMessage = require("../Static/message");
 const renderMessage = require("../Static/renderMessage");
+const { userState } = require("../Static/userState");
 const bot = require("./createBot");
 const errorHandler = require("./errorHandler");
 
@@ -43,7 +44,8 @@ exports.checkMembership = async (userId) => {
   }
 };
 
-exports.handleStartMessage = (chatId) => {
+exports.handleStartMessage = async (chatId) => {
+  await userModel.saveUserState(chatId, userState.STARTING_BOT);
   return this.sendInlineKeyboard(
     chatId,
     renderMessage(JSONMessage.START_MESSAGE, { amount: 12 }),
@@ -65,20 +67,29 @@ exports.handleCommands = (command, chatId) => {
 
 exports.handleMessage = async (chatId, messageText) => {
   try {
-    const userState = await userModel.findUserStateByChatID(chatId);
+    const latestState = await userModel.findUserStateByChatID(chatId);
 
-    if (!userState) {
+    if (!latestState) {
       return this.sendMessage(chatId, messageText);
     }
 
-    if (userState.state === "Selection of Plan") {
+    if (
+      latestState.state.includes(
+        userState.select_plan_1,
+        userState.select_plan_2,
+        userState.select_plan_3
+      )
+    ) {
       const investmentAmount = parseFloat(messageText);
 
       if (!isNaN(investmentAmount) && investmentAmount >= 50) {
-        await userModel.removeUserStateByChatID(chatId);
         await transanctionModel.updateTransaction(chatId, {
           amount: investmentAmount,
         });
+        await userModel.saveUserState(
+          chatId,
+          userState.ENTERED_AMOUNT_TO_INVEST
+        );
         this.sendInlineKeyboard(
           chatId,
           renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE, {
@@ -139,7 +150,7 @@ exports.handlePlan1Selection = async (chatId) => {
       adminPaymentState: "PENDING",
     };
 
-    await userModel.saveUserState(chatId, "Selection of Plan", "Plan 1");
+    await userModel.saveUserState(chatId, userState.select_plan_1);
     await transanctionModel.updateTransaction(chatId, initialTransaction);
 
     this.sendInlineKeyboard(chatId, message);
@@ -153,15 +164,6 @@ exports.handlePlan1Selection = async (chatId) => {
 exports.handlePlan2Selection = async (chatId) => {};
 
 exports.handlePlan3Selection = async (chatId) => {};
-
-exports.investInPlan1 = (chatId) => {
-  const message = renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE);
-  const keyBoard = keyboard.PLAN_1_KEYBOARD;
-  this.sendInlineKeyboard(chatId, message, keyBoard);
-};
-
-exports.investInPlan2 = (chatId) => {};
-exports.investInPlan3 = (chatId) => {};
 
 exports.handleConfirmAmount = async (chatId) => {
   try {

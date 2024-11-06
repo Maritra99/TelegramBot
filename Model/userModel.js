@@ -1,4 +1,4 @@
-const model = require("../schema");
+const model = require("./schema");
 
 exports.saveMemberDataToDB = async (userId, name) => {
   try {
@@ -16,11 +16,11 @@ exports.saveMemberDataToDB = async (userId, name) => {
   }
 };
 
-exports.saveUserState = async (chatId, state, plan) => {
+exports.saveUserState = async (chatId, state) => {
   try {
     return await model.userStateModel.findOneAndUpdate(
       { chatId },
-      { state, plan },
+      { state },
       { upsert: true, new: true }
     );
   } catch (error) {

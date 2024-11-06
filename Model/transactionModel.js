@@ -1,4 +1,4 @@
-const model = require("../schema");
+const model = require("./schema");
 
 exports.updateTransaction = async (chatId, rest) => {
   try {
