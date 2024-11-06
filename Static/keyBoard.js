@@ -26,19 +26,26 @@ keyboard.PLAN_1_KEYBOARD = [
   [{ text: "💰 Invest in Plan 1", callback_data: "invest_plan_1" }],
   [{ text: "🔙 Back to Plans", callback_data: "back_to_plans" }],
 ];
+
 keyboard.PLAN_2_KEYBOARD = [
   [{ text: "💰 Invest in Plan 1", callback_data: "invest_plan_2" }],
   [{ text: "🔙 Back to Plans", callback_data: "back_to_plans" }],
 ];
+
 keyboard.PLAN_3_KEYBOARD = [
   [{ text: "💰 Invest in Plan 1", callback_data: "invest_plan_3" }],
   [{ text: "🔙 Back to Plans", callback_data: "back_to_plans" }],
 ];
+
 keyboard.CONFIRM_KEY_BOARD = [
   [
     { text: "Confirm", callback_data: "confirm_amount" },
     { text: "Cancel", callback_data: "cancel_amount" },
   ],
+];
+
+keyboard.RESTART_KEYBOARD = [
+  [{ text: "🔄 Restart", callback_data: "restart_process" }],
 ];
 
 keyboard.PAYMENT_CONFIRMATION_KEY_BOARD = [

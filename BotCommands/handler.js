@@ -156,7 +156,7 @@ exports.handlePlan3Selection = async (chatId) => {};
 
 exports.investInPlan1 = (chatId) => {
   const message = renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE);
-  const keyBoard = keyboard.PLAN_3_KEYBOARD;
+  const keyBoard = keyboard.PLAN_1_KEYBOARD;
   this.sendInlineKeyboard(chatId, message, keyBoard);
 };
 
@@ -181,6 +181,10 @@ exports.handleConfirmAmount = async (chatId) => {
     await transanctionModel.removeTransactionByChatId(chatId);
     errorHandler.handleError(chatId, "handleConfirmAmount", error);
   }
+};
+
+exports.handleRestart = (chatId) => {
+  this.handleStartMessage(chatId);
 };
 
 exports.sendRedirectButton = async (chatId, data) => {

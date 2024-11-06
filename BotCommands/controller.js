@@ -86,6 +86,9 @@ bot.on("callback_query", async (callbackQuery) => {
         break;
       case "cancel_amount":
         break;
+      case "restart_process":
+        handler.handleRestart(chatId);
+        break;
       default:
         throw Error("Unknown Callback Query");
     }
