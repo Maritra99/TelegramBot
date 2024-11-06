@@ -35,8 +35,14 @@ keyboard.PLAN_3_KEYBOARD = [
   [{ text: "🔙 Back to Plans", callback_data: "back_to_plans" }],
 ];
 keyboard.CONFIRM_KEY_BOARD = [
-  [{ text: "Confirm", callback_data: "confirm_amount" }],
-  [{ text: "Cancel", callback_data: "cancel_amount" }],
+  [
+    { text: "Confirm", callback_data: "confirm_amount" },
+    { text: "Cancel", callback_data: "cancel_amount" },
+  ],
+];
+
+keyboard.PAYMENT_CONFIRMATION_KEY_BOARD = [
+  [{ text: "Payment Done", callback_data: "payment_done" }],
 ];
 
 module.exports = keyboard;

@@ -43,21 +43,3 @@ exports.removeUserStateByChatID = async (chatId) => {
     throw new Error(error.message);
   }
 };
-
-exports.saveInitialTransaction = async (
-  chatId,
-  plan,
-  amount,
-  userPaymentState = "PENDING",
-  adminPaymentState = "PENDING"
-) => {
-  const newTransaction = new model.transactionModel({
-    chatId,
-    plan,
-    amount,
-    userPaymentState,
-    adminPaymentState,
-  });
-
-  await newTransaction.save();
-};

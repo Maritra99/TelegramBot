@@ -38,19 +38,15 @@ schema.transaction = mongoose.Schema({
   },
   plan: {
     type: String,
-    required: true,
   },
   amount: {
     type: Number,
-    required: true,
   },
   userPaymentState: {
     type: String,
-    required: true,
   },
   adminPaymentState: {
     type: String,
-    required: true,
   },
 });
 

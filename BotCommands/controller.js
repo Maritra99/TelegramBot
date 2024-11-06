@@ -77,6 +77,15 @@ bot.on("callback_query", async (callbackQuery) => {
       case "invest_plan_3":
         handler.investInPlan3(chatId);
         break;
+      case "back_to_menu":
+        break;
+      case "back_to_plans":
+        break;
+      case "confirm_amount":
+        handler.handleConfirmAmount(chatId);
+        break;
+      case "cancel_amount":
+        break;
       default:
         throw Error("Unknown Callback Query");
     }

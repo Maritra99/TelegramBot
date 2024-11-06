@@ -1,4 +1,5 @@
-const model = require("../Model/userModel");
+const userModel = require("../Model/userModel");
+const transanctionModel = require("../Model/transactionModel");
 const keyboard = require("../Static/keyBoard");
 const JSONMessage = require("../Static/message");
 const renderMessage = require("../Static/renderMessage");
@@ -64,7 +65,7 @@ exports.handleCommands = (command, chatId) => {
 
 exports.handleMessage = async (chatId, messageText) => {
   try {
-    const userState = await model.findUserStateByChatID(chatId);
+    const userState = await userModel.findUserStateByChatID(chatId);
 
     if (!userState) {
       return this.sendMessage(chatId, messageText);
@@ -74,8 +75,10 @@ exports.handleMessage = async (chatId, messageText) => {
       const investmentAmount = parseFloat(messageText);
 
       if (!isNaN(investmentAmount) && investmentAmount >= 50) {
-        await model.removeUserStateByChatID(chatId);
-        // await model.saveInitialTransaction(chatId);
+        await userModel.removeUserStateByChatID(chatId);
+        await transanctionModel.updateTransaction(chatId, {
+          amount: investmentAmount,
+        });
         this.sendInlineKeyboard(
           chatId,
           renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE, {
@@ -91,6 +94,8 @@ exports.handleMessage = async (chatId, messageText) => {
       }
     }
   } catch (error) {
+    await userModel.removeUserStateByChatID(chatId);
+    await transanctionModel.removeTransactionByChatId(chatId);
     errorHandler.handleError(chatId, "handleMessage", error);
   }
 };
@@ -128,29 +133,26 @@ exports.handlePlan1Selection = async (chatId) => {
   try {
     const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
 
-    await model.saveUserState(chatId, "Selection of Plan", "Plan 1");
+    const initialTransaction = {
+      plan: "Plan 1",
+      userPaymentState: "PENDING",
+      adminPaymentState: "PENDING",
+    };
+
+    await userModel.saveUserState(chatId, "Selection of Plan", "Plan 1");
+    await transanctionModel.updateTransaction(chatId, initialTransaction);
 
     this.sendInlineKeyboard(chatId, message);
   } catch (error) {
+    await userModel.removeUserStateByChatID(chatId);
+    await transanctionModel.removeTransactionByChatId(chatId);
     errorHandler.handleError(chatId, "handlePlan1Selection", error);
   }
 };
 
-exports.handlePlan2Selection = async (chatId) => {
-  const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
+exports.handlePlan2Selection = async (chatId) => {};
 
-  await model.saveUserState(chatId, "Selection of Plan", "Plan 2");
-
-  this.sendInlineKeyboard(chatId, message);
-};
-
-exports.handlePlan3Selection = async (chatId) => {
-  const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
-
-  await model.saveUserState(chatId, "Selection of Plan", "Plan 3");
-
-  this.sendInlineKeyboard(chatId, message);
-};
+exports.handlePlan3Selection = async (chatId) => {};
 
 exports.investInPlan1 = (chatId) => {
   const message = renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE);
@@ -160,6 +162,26 @@ exports.investInPlan1 = (chatId) => {
 
 exports.investInPlan2 = (chatId) => {};
 exports.investInPlan3 = (chatId) => {};
+
+exports.handleConfirmAmount = async (chatId) => {
+  try {
+    const data = await transanctionModel.fetchTransactionByChatId(chatId);
+
+    const paymentRequestMessage = renderMessage(
+      JSONMessage.PAYMENT_REQUEST_MESSAGE,
+      { amount: data.amount }
+    );
+    const keyBoard = keyboard.PAYMENT_CONFIRMATION_KEY_BOARD;
+
+    this.sendMessage(chatId, paymentRequestMessage);
+
+    this.sendInlineKeyboard(chatId, "message", keyBoard);
+  } catch (error) {
+    await userModel.removeUserStateByChatID(chatId);
+    await transanctionModel.removeTransactionByChatId(chatId);
+    errorHandler.handleError(chatId, "handleConfirmAmount", error);
+  }
+};
 
 exports.sendRedirectButton = async (chatId, data) => {
   const params = encodeObject(data);
