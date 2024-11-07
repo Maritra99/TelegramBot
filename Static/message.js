@@ -16,14 +16,8 @@ JSONMessage.PLAN_MESSAGE =
 
 JSONMessage.ASK_AMOUNT_MESSAGE = "Please Enter Amount you want to invest";
 
-JSONMessage.PLAN_1_CONFIRMATION_MESSAGE =
-  "🎉 You've selected Plan 1! 🎉\n\n💰 Investment Amount: {amount}\n\n📈 Expected Profit: 2%\n\n⏳ Duration: 10 days\n\nAre you ready to proceed with this investment? 🤔\n\n🔸 Please click below to confirm your decision!";
-
-JSONMessage.PLAN_2_CONFIRMATION_MESSAGE =
-  "🎉 You've selected Plan 2! 🎉\n\n💰 Investment Amount: {amount}\n\n📈 Expected Profit: 6%\n\n⏳ Duration: 30 days\n\nAre you ready to proceed with this investment? 🤔\n\n🔸 Please click below to confirm your decision!";
-
-JSONMessage.PLAN_3_CONFIRMATION_MESSAGE =
-  "🎉 You've selected Plan 3! 🎉\n\n💰 Investment Amount: {amount}\n\n📈 Expected Profit: 18%\n\n⏳ Duration: 90 days\n\nAre you ready to proceed with this investment? 🤔\n\n🔸 Please click below to confirm your decision!";
+JSONMessage.PLAN_CONFIRMATION_MESSAGE =
+  "🎉 You've selected {planName}! 🎉\n\n💰 Investment Amount: {amount}\n\n💸 Interest Rate: {interest}\n\n📈 Expected Profit: {profit}\n\n⏳ Duration: {time}\n\nAre you ready to proceed with this investment? 🤔\n\n🔸 Please click below to confirm your decision!";
 
 JSONMessage.PAYMENT_REQUEST_MESSAGE =
   "📝 **Payment Details**\n\n💳 **UPI ID:** {upiId}\n💰 **Amount:** ₹{amount}\n\nScan the QR code below to make the payment.";

@@ -18,11 +18,10 @@ exports.saveMemberDataToDB = async (userId, name) => {
 
 exports.saveUserState = async (chatId, state) => {
   try {
-    return await model.userStateModel.findOneAndUpdate(
-      { chatId },
-      { state },
-      { upsert: true, new: true }
-    );
+    return await model.userStateModel
+      .findOneAndUpdate({ chatId }, { state }, { upsert: true, new: true })
+      .lean()
+      .exec();
   } catch (error) {
     throw new Error(error.message);
   }
@@ -30,7 +29,7 @@ exports.saveUserState = async (chatId, state) => {
 
 exports.findUserStateByChatID = async (chatId) => {
   try {
-    return await model.userStateModel.findOne({ chatId });
+    return await model.userStateModel.findOne({ chatId }).lean().exec();
   } catch (error) {
     throw new Error(error.message);
   }

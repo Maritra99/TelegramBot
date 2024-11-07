@@ -50,6 +50,18 @@ schema.transaction = mongoose.Schema(
   { timestamps: true, collection: "userState" }
 );
 
+schema.plan = mongoose.Schema({
+  planName: {
+    type: String,
+  },
+  interest: {
+    type: String,
+  },
+  time: {
+    type: String,
+  },
+});
+
 const model = {};
 
 model.createModel = () => {

@@ -7,6 +7,7 @@ const { userState } = require("../Static/userState");
 const bot = require("./createBot");
 const errorHandler = require("./errorHandler");
 const utils = require("../Utils/generateQRCode");
+const { fetchPlanByPlanName } = require("../Model/planModel");
 
 exports.sendMessage = (chatId, messageText, inlineKeyboard) => {
   bot.sendMessage(chatId, messageText, {
@@ -86,14 +87,14 @@ exports.handleMessage = async (chatId, messageText) => {
       return this.sendMessage(chatId, messageText);
     }
 
-    if (
-      latestState.state.includes(
-        userState.select_plan_1,
-        userState.select_plan_2,
-        userState.select_plan_3
-      )
-    ) {
-      this.handleEnteredPaymentAmount(chatId, messageText);
+    const allowedState = [
+      userState.select_plan_1,
+      userState.select_plan_2,
+      userState.select_plan_3,
+    ];
+
+    if (allowedState.includes(latestState.state)) {
+      this.handleEnteredPaymentAmount(chatId, messageText, latestState.plan);
     }
   } catch (error) {
     await userModel.removeUserStateByChatID(chatId);
@@ -102,8 +103,10 @@ exports.handleMessage = async (chatId, messageText) => {
   }
 };
 
-exports.handleEnteredPaymentAmount = async (chatId, messageText) => {
+exports.handleEnteredPaymentAmount = async (chatId, messageText, plan) => {
   const investmentAmount = parseFloat(messageText);
+
+  const planDetails = await fetchPlanByPlanName(plan);
 
   if (!isNaN(investmentAmount) && investmentAmount >= 50) {
     await transanctionModel.updateTransaction(chatId, {
@@ -112,8 +115,14 @@ exports.handleEnteredPaymentAmount = async (chatId, messageText) => {
     await userModel.saveUserState(chatId, userState.ENTERED_AMOUNT_TO_INVEST);
     this.sendInlineKeyboard(
       chatId,
-      renderMessage(JSONMessage.PLAN_1_CONFIRMATION_MESSAGE, {
+      renderMessage(JSONMessage.PLAN_CONFIRMATION_MESSAGE, {
+        planName: plan,
         amount: investmentAmount,
+        interest: planDetails.interest,
+        time: planDetails.time,
+        profit:
+          investmentAmount +
+          (investmentAmount * parseInt(planDetails.interest)) / 100,
       }),
       keyboard.CONFIRM_KEY_BOARD
     );
@@ -175,9 +184,47 @@ exports.handlePlan1Selection = async (chatId) => {
   }
 };
 
-exports.handlePlan2Selection = async (chatId) => {};
+exports.handlePlan2Selection = async (chatId) => {
+  try {
+    const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
 
-exports.handlePlan3Selection = async (chatId) => {};
+    const initialTransaction = {
+      plan: "Plan 2",
+      userPaymentState: "PENDING",
+      adminPaymentState: "PENDING",
+    };
+
+    await userModel.saveUserState(chatId, userState.select_plan_2);
+    await transanctionModel.updateTransaction(chatId, initialTransaction);
+
+    this.sendInlineKeyboard(chatId, message);
+  } catch (error) {
+    await userModel.removeUserStateByChatID(chatId);
+    await transanctionModel.removeTransactionByChatId(chatId);
+    errorHandler.handleError(chatId, "handlePlan2Selection", error);
+  }
+};
+
+exports.handlePlan3Selection = async (chatId) => {
+  try {
+    const message = renderMessage(JSONMessage.ASK_AMOUNT_MESSAGE);
+
+    const initialTransaction = {
+      plan: "Plan 3",
+      userPaymentState: "PENDING",
+      adminPaymentState: "PENDING",
+    };
+
+    await userModel.saveUserState(chatId, userState.select_plan_3);
+    await transanctionModel.updateTransaction(chatId, initialTransaction);
+
+    this.sendInlineKeyboard(chatId, message);
+  } catch (error) {
+    await userModel.removeUserStateByChatID(chatId);
+    await transanctionModel.removeTransactionByChatId(chatId);
+    errorHandler.handleError(chatId, "handlePlan3Selection", error);
+  }
+};
 
 exports.handleConfirmAmount = async (chatId) => {
   try {
@@ -193,22 +240,4 @@ exports.handleConfirmAmount = async (chatId) => {
 
 exports.handleRestart = (chatId) => {
   this.handleStartMessage(chatId);
-};
-
-exports.sendRedirectButton = async (chatId, data) => {
-  const params = encodeObject(data);
-  const url = `https://demo-payment-integration.onrender.com/?data=${params}`;
-  const buttons = [
-    [
-      {
-        text: "Go to Website",
-        url: url,
-      },
-    ],
-  ];
-  this.sendInlineKeyboard(
-    chatId,
-    "Click the button to go to the website.",
-    buttons
-  );
 };
