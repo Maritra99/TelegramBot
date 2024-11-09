@@ -6,5 +6,5 @@ module.exports = (chatId) => {
   /start - Start the bot
   /help - List available commands
   `;
-  return botHelper.sendMessage(chatId, helpText);
+  return botHelper.sendMessageToUser(chatId, helpText);
 };

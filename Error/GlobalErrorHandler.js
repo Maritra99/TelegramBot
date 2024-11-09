@@ -11,7 +11,7 @@ const formatError = (err, chatId, messageSentToBot) => ({
 module.exports = (error, chatId, messageSentToBot) => {
   const adminChatId = process.env.ADMIN_CHAT_ID;
 
-  botHelper.sendMessage(
+  botHelper.sendMessageToUser(
     adminChatId,
     formatError(error, chatId, messageSentToBot)
   );
@@ -19,5 +19,5 @@ module.exports = (error, chatId, messageSentToBot) => {
   const errorMessageForUser =
     "Oops! Something went wrong. Please try again later.";
 
-  return botHelper.sendMessage(chatId, errorMessageForUser);
+  return botHelper.sendMessageToUser(chatId, errorMessageForUser);
 };

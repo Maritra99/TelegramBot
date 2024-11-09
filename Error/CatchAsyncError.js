@@ -1,13 +1,11 @@
-const errorHandler = require("../Error/GlobalErrorHandler");
+const errorHandler = require("./globalErrorHandler");
 
-const CatchAsyncError = (fn) => {
-  return (chatId, message) => {
+module.exports = (fn) => {
+  return async (chatId, message) => {
     try {
-      fn(chatId, message);
+      return await fn(chatId, message);
     } catch (error) {
       errorHandler(error, chatId, message);
     }
   };
 };
-
-module.exports = CatchAsyncError;
