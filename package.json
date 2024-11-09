@@ -1,0 +1,22 @@
+{
+  "name": "interest-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Aritra Mukherjee",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.19.2",
+    "mongoose": "8.4.5",
+    "node-telegram-bot-api": "0.66.0"
+  },
+  "devDependencies": {
+    "dotenv": "16.4.5",
+    "nodemon": "3.1.4"
+  }
+}
