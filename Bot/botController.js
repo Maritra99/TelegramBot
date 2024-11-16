@@ -6,6 +6,8 @@ const memberShipHelper = require("../Utils/memberShipHelper");
 const botHelper = require("./botHelper");
 const catchAsyncError = require("../Error/catchAsyncError");
 const callbackHandlers = require("../Utils/callbackhandlers");
+const userState = require("../Static/userState");
+const userStateModel = require("../Model/userStateModel");
 
 bot.on(
   "text",
@@ -39,6 +41,12 @@ bot.on(
       return memberShipHelper.handleWithoutMemberShip(chatId);
     }
 
+    if (userState[data]) {
+      await userStateModel.saveUserState(chatId, userState[data]);
+    } else {
+      console.error(`User State Missing for ${data} and chatId: ${chatId}`);
+    }
+
     if (callbackHandlers.callbacks[data]) {
       await callbackHandlers.handler(chatId, data);
     } else {
@@ -51,3 +59,11 @@ bot.on(
     await botHelper.answerCallbackQuery(callbackQuery.id);
   })
 );
+
+bot.on("polling_error", (error) => {
+  console.error(`Polling Error Occured: ${JSON.stringify(error)}`);
+});
+
+bot.on("error", (error) => {
+  console.error(`Normal Error Occured: ${JSON.stringify(error)}`);
+});
