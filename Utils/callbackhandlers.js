@@ -1,23 +1,22 @@
-const botHelper = require("../Bot/botHelper");
 const userStateModel = require("../Model/userStateModel");
 const start = require("../Command/start");
+const dashboard = require("../CallbackQueries/dashboard");
 const viewPlans = require("../CallbackQueries/viewPlans");
 const plan = require("../CallbackQueries/handlePlans");
+const backToMenu = require("../CallbackQueries/backToMenu.js");
+const restart = require("../CallbackQueries/restart");
 
 const callbackHandlers = {};
 
 callbackHandlers.callbacks = {
   start: async (chatId) => await start(chatId),
-  dashboard: async (chatId) => {
-    await botHelper.sendMessageToUser(chatId, "📊 Here's your dashboard...");
-  },
-  view_plans: async (chatId) => viewPlans(chatId),
-  back_to_menu: async (chatId) => {
-    await botHelper.sendMessageToUser(chatId, "Returning to the main menu. 🔙");
-  },
-  select_plan_1: async (chatId) => plan.handlePlan1Selection(chatId),
-  select_plan_2: async (chatId) => plan.handlePlan2Selection(chatId),
-  select_plan_3: async (chatId) => plan.handlePlan3Selection(chatId),
+  dashboard: async (chatId) => await dashboard(chatId),
+  view_plans: async (chatId) => await viewPlans(chatId),
+  back_to_menu: async (chatId) => await backToMenu(chatId),
+  select_plan_1: async (chatId) => await plan.handlePlan1Selection(chatId),
+  select_plan_2: async (chatId) => await plan.handlePlan2Selection(chatId),
+  select_plan_3: async (chatId) => await plan.handlePlan3Selection(chatId),
+  restart_process: async (chatId) => await restart(chatId),
 };
 
 callbackHandlers.handler = async (chatId, callbackData) => {

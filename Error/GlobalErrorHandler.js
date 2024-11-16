@@ -1,4 +1,5 @@
 const bot = require("../Bot/botConfig");
+const keyboard = require("../Static/Keyboard");
 const formatError = (err, chatId, messageSentToBot) => ({
   Error: err,
   Message: err.message,
@@ -25,5 +26,9 @@ module.exports = async (error, chatId, messageSentToBot) => {
   const errorMessageForUser =
     "Oops! Something went wrong. Please try again later.";
 
-  return bot.sendMessage(chatId, errorMessageForUser);
+  return bot.sendMessage(
+    chatId,
+    errorMessageForUser,
+    keyboard.RESTART_KEYBOARD
+  );
 };
