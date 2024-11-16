@@ -16,6 +16,28 @@ schema.userState = mongoose.Schema(
   { timestamps: true, collection: "userState" }
 );
 
+schema.transaction = mongoose.Schema(
+  {
+    chatId: {
+      type: String,
+      unique: true,
+    },
+    plan: {
+      type: String,
+    },
+    amount: {
+      type: Number,
+    },
+    userPaymentState: {
+      type: String,
+    },
+    adminPaymentState: {
+      type: String,
+    },
+  },
+  { timestamps: true, collection: "transaction" }
+);
+
 model.createModel = () => {
   for (let collectionName in schema) {
     if (schema.hasOwnProperty(collectionName)) {
