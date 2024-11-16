@@ -2,8 +2,9 @@ const botHelper = require("../Bot/botHelper");
 const userStateModel = require("../Model/userStateModel");
 const message = require("../Static/message");
 const userState = require("../Static/userState");
+const handlepayment = require("../Utils/handlePayment");
 
-module.exports = async (chatId) => {
+module.exports = async (chatId, messageText) => {
   const unknownText = message.UNKNOWN_BUTTON;
 
   const currentState = await userStateModel.findUserStateByChatID(chatId);
@@ -15,8 +16,7 @@ module.exports = async (chatId) => {
   ];
 
   if (currentState && allowedState.includes(currentState.state)) {
-    // this.handleEnteredPaymentAmount(chatId, messageText, latestState.plan);
-    return botHelper.sendMessageToUser(chatId, "unknownText");
+    return handlepayment.handleEnteredPaymentAmount(chatId, messageText);
   } else {
     return botHelper.sendMessageToUser(chatId, unknownText);
   }
