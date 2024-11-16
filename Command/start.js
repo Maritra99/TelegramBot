@@ -1,13 +1,12 @@
 const botHelper = require("../Bot/botHelper");
 const keyBoard = require("../Static/Keyboard");
+const message = require("../Static/message");
 
 module.exports = async (chatId) => {
-  const startText =
-    "Welcome to the Financial Investment Bot! Type /help to see available commands.";
-
+  const startText = message.START_MESSAGE;
   return botHelper.sendKeyboardToUser(
     chatId,
     startText,
-    keyBoard.PLANS_KEYBOARD
+    keyBoard.START_MESSAGE_KEYBOARD
   );
 };

@@ -1,7 +1,7 @@
 const botHelper = require("../Bot/botHelper");
+const message = require("../Static/message");
 
-module.exports = (chatId, message) => {
-  const unknownText =
-    "I'm sorry, I didn't understand that. Type /help for a list of commands.";
+module.exports = (chatId) => {
+  const unknownText = message.UNKNOWN_BUTTON;
   return botHelper.sendMessageToUser(chatId, unknownText);
 };

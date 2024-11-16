@@ -1,16 +1,11 @@
 const botHelper = require("../Bot/botHelper");
 const userStateModel = require("../Model/userStateModel");
-const catchAsyncError = require("../Error/catchAsyncError");
+const start = require("../Command/start");
 
 const callbackHandlers = {};
 
 callbackHandlers.callbacks = {
-  start: async (chatId) => {
-    await botHelper.sendMessageToUser(
-      chatId,
-      "Welcome to the 12% Interest Bot! 🌟"
-    );
-  },
+  start: async (chatId) => await start(chatId),
   dashboard: async (chatId) => {
     await botHelper.sendMessageToUser(chatId, "📊 Here's your dashboard...");
   },
@@ -28,9 +23,9 @@ callbackHandlers.callbacks = {
   },
 };
 
-callbackHandlers.handler = catchAsyncError(async (chatId, callbackData) => {
+callbackHandlers.handler = async (chatId, callbackData) => {
   await userStateModel.saveUserState(chatId, callbackData);
   return await callbackHandlers.callbacks[callbackData](chatId);
-});
+};
 
 module.exports = callbackHandlers;
