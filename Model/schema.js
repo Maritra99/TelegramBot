@@ -38,7 +38,7 @@ schema.transaction = mongoose.Schema(
   { timestamps: true, collection: "transaction" }
 );
 
-model.createModel = () => {
+model.createModel = async () => {
   for (let collectionName in schema) {
     if (schema.hasOwnProperty(collectionName)) {
       model[`${collectionName}Model`] = mongoose.model(

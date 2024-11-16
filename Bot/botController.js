@@ -6,8 +6,6 @@ const memberShipHelper = require("../Utils/memberShipHelper");
 const botHelper = require("./botHelper");
 const catchAsyncError = require("../Error/catchAsyncError");
 const callbackHandlers = require("../Utils/callbackhandlers");
-const userState = require("../Static/userState");
-const userStateModel = require("../Model/userStateModel");
 
 bot.on(
   "text",
@@ -39,12 +37,6 @@ bot.on(
 
     if (!isMember) {
       return memberShipHelper.handleWithoutMemberShip(chatId);
-    }
-
-    if (userState[data]) {
-      await userStateModel.saveUserState(chatId, userState[data]);
-    } else {
-      console.error(`User State Missing for ${data} and chatId: ${chatId}`);
     }
 
     if (callbackHandlers.callbacks[data]) {

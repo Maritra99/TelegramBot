@@ -5,6 +5,7 @@ const viewPlans = require("../CallbackQueries/viewPlans");
 const plan = require("../CallbackQueries/handlePlans");
 const backToMenu = require("../CallbackQueries/backToMenu.js");
 const restart = require("../CallbackQueries/restart");
+const userState = require("../Static/userState.js");
 
 const callbackHandlers = {};
 
@@ -20,7 +21,12 @@ callbackHandlers.callbacks = {
 };
 
 callbackHandlers.handler = async (chatId, callbackData) => {
-  await userStateModel.saveUserState(chatId, callbackData);
+  if (userState[callbackData]) {
+    await userStateModel.saveUserState(chatId, userState[callbackData]);
+  } else {
+    console.error(`User State Missing for ${data} and chatId: ${chatId}`);
+  }
+
   return await callbackHandlers.callbacks[callbackData](chatId);
 };
 
