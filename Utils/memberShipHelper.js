@@ -1,5 +1,6 @@
 const botHelper = require("../Bot/botHelper");
 const catchAsyncError = require("../Error/catchAsyncError");
+const keyboard = require("../Static/Keyboard");
 
 const memberShipHelper = {};
 
@@ -17,7 +18,11 @@ memberShipHelper.checkMemberShip = catchAsyncError(async (userId) => {
 });
 
 memberShipHelper.handleWithoutMemberShip = catchAsyncError(async (chatId) => {
-  return await botHelper.sendMessageToUser(chatId, "Join Channel");
+  return await botHelper.sendKeyboardToUser(
+    chatId,
+    "Join Channel",
+    keyboard.JOIN_CHANNEL_KEYBOARD
+  );
 });
 
 module.exports = memberShipHelper;

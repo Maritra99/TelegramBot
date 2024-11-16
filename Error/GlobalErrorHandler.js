@@ -1,4 +1,4 @@
-const botHelper = require("../Bot/botHelper");
+const bot = require("../Bot/botConfig");
 const formatError = (err, chatId, messageSentToBot) => ({
   Error: err,
   Message: err.message,
@@ -8,16 +8,22 @@ const formatError = (err, chatId, messageSentToBot) => ({
   MessageSentToBot: messageSentToBot,
 });
 
-module.exports = (error, chatId, messageSentToBot) => {
-  const adminChatId = process.env.ADMIN_CHAT_ID;
-
-  botHelper.sendMessageToUser(
-    adminChatId,
-    formatError(error, chatId, messageSentToBot)
+module.exports = async (error, chatId, messageSentToBot) => {
+  console.error(
+    "Error Occured: ",
+    JSON.stringify(formatError(error, chatId, messageSentToBot))
   );
+
+  const adminChatId = process.env.ADMIN_CHAT_ID;
+  if (adminChatId) {
+    bot.sendMessage(
+      adminChatId,
+      JSON.stringify(formatError(error, chatId, messageSentToBot) || "")
+    );
+  }
 
   const errorMessageForUser =
     "Oops! Something went wrong. Please try again later.";
 
-  return botHelper.sendMessageToUser(chatId, errorMessageForUser);
+  return bot.sendMessage(chatId, errorMessageForUser);
 };

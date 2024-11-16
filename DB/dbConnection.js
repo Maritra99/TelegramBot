@@ -7,7 +7,7 @@ exports.connectDB = async () => {
     model.createModel();
     console.log("Database Connected Successfully");
   } catch (error) {
-    console.log("Error in Database Connection :", error);
+    console.error("Error in Database Connection :", JSON.stringify(error));
     process.exit(1);
   }
 };
