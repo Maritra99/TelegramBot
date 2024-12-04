@@ -1,4 +1,5 @@
 module.exports = {
+  // Callback Quaries.........................
   dashboard: "CLICKED_DASHBOARD",
   view_plans: "CLICKED_VIEW_PLANS",
   settings: "CLICKED_SETTINGS",
@@ -15,6 +16,7 @@ module.exports = {
   payment_successful: "PAYMENT_SUCCESSFUL",
   payment_failed: "PAYMENT_FAILED",
 
+  // Message and Others......................
   STARTING_BOT: "STARTING_BOT",
   ENTERED_AMOUNT_TO_INVEST: "ENTERED_AMOUNT_TO_INVEST",
 };

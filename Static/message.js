@@ -40,6 +40,6 @@ message.GENERIC_ERROR_MESSAGE =
 message.UNKNOWN_COMMAND = "Unknown Command";
 
 message.AMOUNT_SHOULD_NOT_BE_LOWER_THAN_MINIMUM =
-  "⚠️ **Please enter a valid amount greater than ₹50.**";
+  "⚠️ Please enter a valid amount greater than ₹50.";
 
 module.exports = message;

@@ -5,7 +5,7 @@ const extractDetails = require("../Utils/extractDetails");
 const memberShipHelper = require("../Utils/memberShipHelper");
 const botHelper = require("./botHelper");
 const catchAsyncError = require("../Error/catchAsyncError");
-const callbackHandlers = require("../Utils/callbackhandlers");
+const callbackHandlers = require("../Handlers/callbackhandlers");
 
 bot.on(
   "text",
