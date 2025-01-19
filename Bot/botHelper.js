@@ -38,4 +38,16 @@ botHelper.answerCallbackQuery = async (callbackQueryId) => {
   }
 };
 
+botHelper.sendImageToUser = async (chatId, imageFile, caption) => {
+  try {
+    return await bot.sendPhoto(chatId, imageFile, {
+      caption,
+      contentType: "image/png"
+    });
+  } catch (error) {
+    console.error(`Error Sending Image to User: ${JSON.stringify(error)}`);
+    throw error;
+  }
+};
+
 module.exports = botHelper;

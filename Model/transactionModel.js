@@ -6,3 +6,11 @@ exports.updateTransaction = async (chatId, rest) => {
     .lean()
     .exec();
 };
+
+exports.deleteTransactionByChatId = async (chatId) => {
+  return model.transactionModel.deleteOne({ chatId }).lean().exec();
+};
+
+exports.fetchTransactionByChatId = async (chatId) => {
+  return model.transactionModel.findOne({ chatId }).lean().exec();
+};

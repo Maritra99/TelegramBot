@@ -17,6 +17,7 @@ module.exports = {
   payment_failed: "PAYMENT_FAILED",
 
   // Message and Others......................
-  starting_bot: "STARTING_BOT",
+  start: "STARTING_BOT",
   entered_amount_to_invest: "ENTERED_AMOUNT_TO_INVEST",
+  transaction_not_found: "TRANSACTION_NOT_FOUND",
 };

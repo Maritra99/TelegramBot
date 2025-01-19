@@ -7,9 +7,9 @@ const staticUserState = require("../Static/userState");
 module.exports = async (chatId, userState) => {
   const startText = message.START_MESSAGE;
 
-  const state = userState ? userState : staticUserState["starting_bot"];
-
-  await userStateModel.saveUserState(chatId, state);
+  if (userState) {
+    await userStateModel.saveUserState(chatId, userState);
+  }
 
   return await botHelper.sendKeyboardToUser(
     chatId,
