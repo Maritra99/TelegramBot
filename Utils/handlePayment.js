@@ -11,31 +11,36 @@ const handlepayment = {};
 handlepayment.handleEnteredPaymentAmount = async (chatId, messageText) => {
   await userStateModel.saveUserState(
     chatId,
-    userState.ENTERED_AMOUNT_TO_INVEST
+    userState["entered_amount_to_invest"]
   );
 
   const investmentAmount = parseFloat(messageText);
 
   if (!isNaN(investmentAmount) && investmentAmount >= 50) {
-    await transactionModel.updateTransaction(chatId, {
-      amount: investmentAmount,
-    });
-
-    // const messageToSend = renderMessage(message.PLAN_CONFIRMATION_MESSAGE, {
-    //   planName: plan,
-    //   amount: investmentAmount,
-    //   interest: planDetails.interest,
-    //   time: planDetails.time,
-    //   profit:
-    //     investmentAmount +
-    //     (investmentAmount * parseInt(planDetails.interest)) / 100,
-    // });
-
-    return botHelper.sendKeyboardToUser(
+    const updatedTransaction = await transactionModel.updateTransaction(
       chatId,
-      message.PLAN_CONFIRMATION_MESSAGE,
-      keyboard.CONFIRM_KEY_BOARD
+      {
+        amount: investmentAmount,
+      }
     );
+
+    if (updatedTransaction) {
+      const messageToSend = renderMessage(message.PLAN_CONFIRMATION_MESSAGE, {
+        planName: updatedTransaction.plan.name,
+        amount: updatedTransaction.amount,
+        interest: updatedTransaction.plan.interest,
+        time: updatedTransaction.plan.duration,
+        profit:
+          investmentAmount +
+          (investmentAmount * parseInt(updatedTransaction.plan.interest)) / 100,
+      });
+
+      return botHelper.sendKeyboardToUser(
+        chatId,
+        messageToSend,
+        keyboard.CONFIRM_KEY_BOARD
+      );
+    }
   } else {
     return botHelper.sendMessageToUser(
       chatId,

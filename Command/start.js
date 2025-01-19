@@ -2,12 +2,14 @@ const botHelper = require("../Bot/botHelper");
 const userStateModel = require("../Model/userStateModel");
 const keyBoard = require("../Static/Keyboard");
 const message = require("../Static/message");
-const userState = require("../Static/userState");
+const staticUserState = require("../Static/userState");
 
-module.exports = async (chatId) => {
+module.exports = async (chatId, userState) => {
   const startText = message.START_MESSAGE;
 
-  await userStateModel.saveUserState(chatId, userState["STARTING_BOT"]);
+  const state = userState ? userState : staticUserState["starting_bot"];
+
+  await userStateModel.saveUserState(chatId, state);
 
   return await botHelper.sendKeyboardToUser(
     chatId,

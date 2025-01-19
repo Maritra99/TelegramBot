@@ -9,13 +9,16 @@ module.exports = async (chatId, messageText) => {
 
   const currentState = await userStateModel.findUserStateByChatID(chatId);
 
-  const allowedState = [
+  const allowedStateForPaymentAmount = [
     userState.select_plan_1,
     userState.select_plan_2,
     userState.select_plan_3,
   ];
 
-  if (currentState && allowedState.includes(currentState.state)) {
+  if (
+    currentState &&
+    allowedStateForPaymentAmount.includes(currentState.state)
+  ) {
     return handlepayment.handleEnteredPaymentAmount(chatId, messageText);
   } else {
     return botHelper.sendMessageToUser(chatId, unknownText);

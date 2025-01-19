@@ -1,14 +1,17 @@
 const botHelper = require("../Bot/botHelper");
 const transactionModel = require("../Model/transactionModel");
 const message = require("../Static/message");
+const generatePlanData = require("../Utils/generatePlanData");
 
 const handlePlans = {};
 
 const handlePlanSelection = async (planName, chatId) => {
   const messageToSend = message.ASK_AMOUNT_MESSAGE;
 
+  const planObj = generatePlanData(planName);
+
   const initialTransaction = {
-    plan: planName,
+    plan: planObj,
     userPaymentState: "PENDING",
     adminPaymentState: "PENDING",
   };

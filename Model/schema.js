@@ -23,7 +23,9 @@ schema.transaction = mongoose.Schema(
       unique: true,
     },
     plan: {
-      type: String,
+      name: { type: String },
+      interest: { type: String },
+      duration: { type: String },
     },
     amount: {
       type: Number,
