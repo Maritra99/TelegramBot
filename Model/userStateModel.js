@@ -4,7 +4,11 @@ const userStateModel = {};
 
 userStateModel.saveUserState = async (chatId, state) => {
   return model.userStateModel
-    .findOneAndUpdate({ chatId }, { state }, { upsert: true, new: true })
+    .findOneAndUpdate(
+      { chatId },
+      { $push: { state: state } },
+      { upsert: true, new: true }
+    )
     .lean()
     .exec();
 };

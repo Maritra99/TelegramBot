@@ -10,6 +10,8 @@ const confirmAmount = require("../CallbackQueries/confirmAmount.js");
 const cancelAmount = require("../CallbackQueries/cancelAmount.js");
 const paymentSuccess = require("../CallbackQueries/paymentSuccessful.js");
 const paymentFailed = require("../CallbackQueries/paymentFailed.js");
+const paymentSuccessAdmin = require("../CallbackQueries/paymentSuccessfulAdmin.js");
+const paymentFailedAdmin = require("../CallbackQueries/paymentFailedAdmin.js");
 
 const callbackHandlers = {};
 
@@ -33,6 +35,14 @@ callbackHandlers.callbacks = {
     await paymentFailed(chatId, messageId),
 };
 
+callbackHandlers.AdminCallbacks = {
+  //Admin Callbacks
+  admin_payment_successful: async (chatId, messageId, userChatId) =>
+    await paymentSuccessAdmin(chatId, messageId, userChatId),
+  admin_payment_failed: async (chatId, messageId, userChatId) =>
+    await paymentFailedAdmin(chatId, messageId, userChatId),
+};
+
 callbackHandlers.handler = async (
   chatId,
   messageId,
@@ -49,6 +59,19 @@ callbackHandlers.handler = async (
     chatId,
     messageId,
     userDetails
+  );
+};
+
+callbackHandlers.adminHandler = async (
+  chatId,
+  messageId,
+  callbackData,
+  userWhoMadeThePayment
+) => {
+  return await callbackHandlers.AdminCallbacks[callbackData](
+    chatId,
+    messageId,
+    userWhoMadeThePayment
   );
 };
 

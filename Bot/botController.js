@@ -42,14 +42,31 @@ bot.on(
   catchAsyncError(async (callbackQuery) => {
     const { message: messageObj, data, from } = callbackQuery;
     const chatId = extractDetails.getChatId(messageObj);
-    const messageId = extractDetails.getMessageId(messageObj);
+    const messageIdToDeletePreviousCallback =
+      extractDetails.getMessageId(messageObj);
     const chatType = extractDetails.getChatType(messageObj);
     const groupName = extractDetails.getGroupName(messageObj);
 
+    // Check if callback is coming from a group, group should be Admin's group
     if (chatType === "group" || chatType === "supergroup") {
       if (!allowedGroups.includes(groupName)) {
         return;
       }
+
+      // Callbacks for admin should always starts with admin_ and ends with _chatIdOfUser
+      if (data.startsWith("admin_")) {
+        const parts = data.split("_");
+        const callback = parts.slice(0, -1).join("_");
+        const userWhoMadeThePayment = parts[parts.length - 1];
+
+        await callbackHandlers.adminHandler(
+          chatId,
+          messageIdToDeletePreviousCallback,
+          callback,
+          userWhoMadeThePayment
+        );
+      }
+      // If callback is coming from private chat process normally
     } else if (chatType === "private") {
       const isMember = await memberShipHelper.checkMemberShip(chatId);
 
@@ -58,7 +75,12 @@ bot.on(
       }
 
       if (callbackHandlers.callbacks[data]) {
-        await callbackHandlers.handler(chatId, messageId, data, from);
+        await callbackHandlers.handler(
+          chatId,
+          messageIdToDeletePreviousCallback,
+          data,
+          from
+        );
       } else {
         await botHelper.sendMessageToUser(
           chatId,

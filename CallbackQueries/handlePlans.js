@@ -1,4 +1,5 @@
 const botHelper = require("../Bot/botHelper");
+const { PaymentStatus } = require("../Model/schema");
 const transactionModel = require("../Model/transactionModel");
 const message = require("../Static/message");
 const generatePlanData = require("../Utils/generatePlanData");
@@ -12,8 +13,8 @@ const handlePlanSelection = async (planName, chatId) => {
 
   const initialTransaction = {
     plan: planObj,
-    userPaymentState: "PENDING",
-    adminPaymentState: "PENDING",
+    userPaymentState: PaymentStatus.PENDING,
+    adminPaymentState: PaymentStatus.PENDING,
   };
 
   await transactionModel.updateTransaction(chatId, initialTransaction);

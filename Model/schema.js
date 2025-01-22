@@ -3,6 +3,12 @@ const mongoose = require("mongoose");
 const schema = {};
 const model = {};
 
+const PaymentStatus = (model.PaymentStatus = {
+  PENDING: "PENDING",
+  SUCCESS: "SUCCESS",
+  FAILED: "FAILED",
+});
+
 schema.userState = mongoose.Schema(
   {
     chatId: {
@@ -10,7 +16,7 @@ schema.userState = mongoose.Schema(
       unique: true,
     },
     state: {
-      type: String,
+      type: Array,
     },
   },
   { timestamps: true, collection: "userState" }
@@ -32,9 +38,11 @@ schema.transaction = mongoose.Schema(
     },
     userPaymentState: {
       type: String,
+      enum: PaymentStatus,
     },
     adminPaymentState: {
       type: String,
+      enum: PaymentStatus,
     },
     transactionTime: {
       type: Date,

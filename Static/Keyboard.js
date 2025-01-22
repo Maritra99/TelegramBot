@@ -59,11 +59,11 @@ keyboard.PAYMENT_CONFIRMATION_FOR_ADMIN_KEY_BOARD = [
   [
     {
       text: "✅ Payment Successful",
-      callback_data: "payment_successful_admin",
+      callback_data: "admin_payment_successful",
     },
     {
       text: "❌ Payment Failed",
-      callback_data: "payment_failed_admin",
+      callback_data: "admin_payment_failed",
     },
   ],
 ];
