@@ -8,6 +8,8 @@ const restart = require("../CallbackQueries/restart.js");
 const userState = require("../Static/userState.js");
 const confirmAmount = require("../CallbackQueries/confirmAmount.js");
 const cancelAmount = require("../CallbackQueries/cancelAmount.js");
+const paymentSuccess = require("../CallbackQueries/paymentSuccessful.js");
+const paymentFailed = require("../CallbackQueries/paymentFailed.js");
 
 const callbackHandlers = {};
 
@@ -21,18 +23,24 @@ callbackHandlers.callbacks = {
   select_plan_2: async (chatId) => await plan.handlePlan2Selection(chatId),
   select_plan_3: async (chatId) => await plan.handlePlan3Selection(chatId),
   restart_process: async (chatId) => await restart(chatId),
-  confirm_amount: async (chatId) => await confirmAmount(chatId),
-  cancel_amount: async (chatId) => await cancelAmount(chatId),
+  confirm_amount: async (chatId, messageId) =>
+    await confirmAmount(chatId, messageId),
+  cancel_amount: async (chatId, messageId) =>
+    await cancelAmount(chatId, messageId),
+  payment_successful: async (chatId, messageId) =>
+    await paymentSuccess(chatId, messageId),
+  payment_failed: async (chatId, messageId) =>
+    await paymentFailed(chatId, messageId),
 };
 
-callbackHandlers.handler = async (chatId, callbackData) => {
+callbackHandlers.handler = async (chatId, messageId, callbackData) => {
   if (userState[callbackData]) {
     await userStateModel.saveUserState(chatId, userState[callbackData]);
   } else {
     console.error(`User State Missing for ${data} and chatId: ${chatId}`);
   }
 
-  return await callbackHandlers.callbacks[callbackData](chatId);
+  return await callbackHandlers.callbacks[callbackData](chatId, messageId);
 };
 
 module.exports = callbackHandlers;

@@ -42,4 +42,6 @@ message.UNKNOWN_COMMAND = "Unknown Command";
 message.AMOUNT_SHOULD_NOT_BE_LOWER_THAN_MINIMUM =
   "⚠️ Please enter a valid amount greater than ₹50.";
 
+message.TRANSACTION_NOT_FOUND = "Transaction Not Found";
+
 module.exports = message;

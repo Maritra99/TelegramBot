@@ -32,6 +32,7 @@ bot.on(
   catchAsyncError(async (callbackQuery) => {
     const { message: messageObj, data } = callbackQuery;
     const chatId = extractDetails.getChatId(messageObj);
+    const messageId = extractDetails.getMessageId(messageObj);
 
     const isMember = await memberShipHelper.checkMemberShip(chatId);
 
@@ -40,7 +41,7 @@ bot.on(
     }
 
     if (callbackHandlers.callbacks[data]) {
-      await callbackHandlers.handler(chatId, data);
+      await callbackHandlers.handler(chatId, messageId, data);
     } else {
       await botHelper.sendMessageToUser(
         chatId,

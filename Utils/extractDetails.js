@@ -8,4 +8,8 @@ extractDetails.getMessage = (msg) => {
   return msg && msg.text;
 };
 
+extractDetails.getMessageId = (msg) => {
+  return msg && msg.message_id;
+};
+
 module.exports = extractDetails;

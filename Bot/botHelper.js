@@ -26,7 +26,7 @@ botHelper.sendKeyboardToUser = async (chatId, text, buttons) => {
       inline_keyboard: buttons,
     },
   };
-  return botHelper.sendMessageToUser(chatId, text, options);
+  return await botHelper.sendMessageToUser(chatId, text, options);
 };
 
 botHelper.answerCallbackQuery = async (callbackQueryId) => {
@@ -42,7 +42,19 @@ botHelper.sendImageToUser = async (chatId, imageFile, caption) => {
   try {
     return await bot.sendPhoto(chatId, imageFile, {
       caption,
-      contentType: "image/png"
+      contentType: "image/png",
+    });
+  } catch (error) {
+    console.error(`Error Sending Image to User: ${JSON.stringify(error)}`);
+    throw error;
+  }
+};
+
+botHelper.deleteInlineKeyboard = async (chatId, messageId) => {
+  try {
+    return await bot.editMessageReplyMarkup(null, {
+      chat_id: chatId,
+      message_id: messageId,
     });
   } catch (error) {
     console.error(`Error Sending Image to User: ${JSON.stringify(error)}`);

@@ -36,6 +36,9 @@ schema.transaction = mongoose.Schema(
     adminPaymentState: {
       type: String,
     },
+    transactionTime: {
+      type: Date,
+    },
   },
   { timestamps: true, collection: "transaction" }
 );
