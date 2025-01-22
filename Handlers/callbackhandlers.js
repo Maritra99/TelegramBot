@@ -27,20 +27,29 @@ callbackHandlers.callbacks = {
     await confirmAmount(chatId, messageId),
   cancel_amount: async (chatId, messageId) =>
     await cancelAmount(chatId, messageId),
-  payment_successful: async (chatId, messageId) =>
-    await paymentSuccess(chatId, messageId),
+  payment_successful: async (chatId, messageId, userDetails) =>
+    await paymentSuccess(chatId, messageId, userDetails),
   payment_failed: async (chatId, messageId) =>
     await paymentFailed(chatId, messageId),
 };
 
-callbackHandlers.handler = async (chatId, messageId, callbackData) => {
+callbackHandlers.handler = async (
+  chatId,
+  messageId,
+  callbackData,
+  userDetails
+) => {
   if (userState[callbackData]) {
     await userStateModel.saveUserState(chatId, userState[callbackData]);
   } else {
     console.error(`User State Missing for ${data} and chatId: ${chatId}`);
   }
 
-  return await callbackHandlers.callbacks[callbackData](chatId, messageId);
+  return await callbackHandlers.callbacks[callbackData](
+    chatId,
+    messageId,
+    userDetails
+  );
 };
 
 module.exports = callbackHandlers;

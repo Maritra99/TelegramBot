@@ -15,7 +15,7 @@ module.exports = async (error, chatId, messageSentToBot) => {
     JSON.stringify(formatError(error, chatId, messageSentToBot))
   );
 
-  const adminChatId = process.env.ADMIN_CHAT_ID;
+  const adminChatId = process.env.ERROR_GROUP_CHAT_ID;
   if (adminChatId) {
     bot.sendMessage(
       adminChatId,

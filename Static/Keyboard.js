@@ -55,4 +55,17 @@ keyboard.PAYMENT_CONFIRMATION_KEY_BOARD = [
   ],
 ];
 
+keyboard.PAYMENT_CONFIRMATION_FOR_ADMIN_KEY_BOARD = [
+  [
+    {
+      text: "✅ Payment Successful",
+      callback_data: "payment_successful_admin",
+    },
+    {
+      text: "❌ Payment Failed",
+      callback_data: "payment_failed_admin",
+    },
+  ],
+];
+
 module.exports = keyboard;
