@@ -1,9 +1,9 @@
-const botHelper = require("../Bot/botHelper");
-const model = require("../Model/schema");
-const transactionModel = require("../Model/transactionModel");
-const keyboard = require("../Static/Keyboard");
-const message = require("../Static/message");
-const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin");
+const botHelper = require("../../Bot/botHelper");
+const model = require("../../Model/schema");
+const transactionModel = require("../../Model/transactionModel");
+const keyboard = require("../../Static/Keyboard");
+const message = require("../../Static/message");
+const { notifyErrorToAdmin } = require("../../Utils/notifyToAdmin");
 const dashboard = require("./dashboard");
 
 module.exports = async ({ userChatId, messageId, userDetails, paymentId }) => {

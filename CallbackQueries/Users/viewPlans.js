@@ -1,6 +1,6 @@
-const botHelper = require("../Bot/botHelper");
-const keyboard = require("../Static/Keyboard");
-const message = require("../Static/message");
+const botHelper = require("../../Bot/botHelper");
+const keyboard = require("../../Static/Keyboard");
+const message = require("../../Static/message");
 
 module.exports = async ({ userChatId }) => {
   const messageToSend = message.PLAN_MESSAGE;

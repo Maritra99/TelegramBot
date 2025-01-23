@@ -1,12 +1,12 @@
-const botHelper = require("../Bot/botHelper");
-const transactionModel = require("../Model/transactionModel");
+const botHelper = require("../../Bot/botHelper");
+const transactionModel = require("../../Model/transactionModel");
 const dashBoard = require("./dashboard");
-const userState = require("../Static/userState");
-const generateAndSendQRCode = require("../Utils/generateAndSendQRCode");
-const message = require("../Static/message");
-const renderMessage = require("../Utils/renderMessage");
-const keyboard = require("../Static/Keyboard");
-const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin");
+const userState = require("../../Static/userState");
+const generateAndSendQRCode = require("../../Utils/generateAndSendQRCode");
+const message = require("../../Static/message");
+const renderMessage = require("../../Utils/renderMessage");
+const keyboard = require("../../Static/Keyboard");
+const { notifyErrorToAdmin } = require("../../Utils/notifyToAdmin");
 
 module.exports = async ({ userChatId, messageId, paymentId }) => {
   botHelper.deleteInlineKeyboard(userChatId, messageId);

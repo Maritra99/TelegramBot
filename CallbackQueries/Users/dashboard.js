@@ -1,5 +1,5 @@
-const botHelper = require("../Bot/botHelper");
-const userStateModel = require("../Model/userStateModel");
+const botHelper = require("../../Bot/botHelper");
+const userStateModel = require("../../Model/userStateModel");
 
 module.exports = async ({ userChatId, userState }) => {
   if (userState) {

@@ -1,4 +1,4 @@
-const botHelper = require("../Bot/botHelper");
+const botHelper = require("../../Bot/botHelper");
 
 module.exports = async ({ userChatId }) => {
   await botHelper.sendMessageToUser(
