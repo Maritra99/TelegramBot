@@ -1,13 +1,21 @@
 module.exports = (callback) => {
-  let startCallback;
-  let endDigit;
   const parts = callback.split("_");
 
-  if (parts && parts.length <= 2) {
-    return { startCallback: callback, endDigit };
-  }
-  startCallback = parts.slice(0, -1).join("_");
-  endDigit = parts[parts.length - 1];
+  let startCallback;
+  let midDigit;
+  let endDigit;
 
-  return { startCallback, endDigit };
+  if (parts.length === 2) {
+    startCallback = callback;
+    endDigit = undefined;
+  } else if (parts.length === 3) {
+    startCallback = parts.slice(0, 2).join("_");
+    endDigit = parts[2];
+  } else if (parts.length === 4) {
+    startCallback = parts.slice(0, 2).join("_");
+    midDigit = parts[2];
+    endDigit = parts[3];
+  }
+
+  return { startCallback, midDigit, endDigit };
 };

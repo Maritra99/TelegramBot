@@ -44,13 +44,9 @@ module.exports = async ({ userChatId, messageId, userDetails, paymentId }) => {
       (trans) => trans.transactionId === paymentId
     );
 
-  let amount, transactionId;
+  let amount;
   if (transactionObj && transactionObj.amount) {
     amount = transactionObj.amount;
-  }
-
-  if (transactionObj && transactionObj.transactionId) {
-    transactionId = transactionObj.transactionId;
   }
 
   // Add user chatId to admin keyboard to process payment status from admin
@@ -67,7 +63,7 @@ module.exports = async ({ userChatId, messageId, userDetails, paymentId }) => {
   )} ${JSON.stringify(userDetails.last_name)}\nUsername: ${JSON.stringify(
     userDetails.username
   )}\nUser Id: ${JSON.stringify(userDetails.id)}\nPayment Id: ${JSON.stringify(
-    transactionId
+    paymentId
   )}\nPayment: ${JSON.stringify(amount)}`;
 
   // Send Keyboard to Admin to Update Status of payment

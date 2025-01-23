@@ -74,12 +74,15 @@ bot.on(
         return;
       }
 
-      // Callbacks for admin should always starts with admin_ and ends with _chatIdOfUser
-      if (callbackData.startsWith("admin_")) {
-        const chatId = extractDetails.getChatId(msg);
+      const {
+        endDigit: paymentId,
+        midDigit: userChatId,
+        startCallback: callbackDataForAdmin,
+      } = extractChatIdAndCallbackData(callbackData);
 
-        const { endDigit: userChatId, startCallback: callbackDataForAdmin } =
-          extractChatIdAndCallbackData(callbackData);
+      // Callbacks for admin should always starts with admin_ and ends with _chatIdOfUser
+      if (callbackHandlers.AdminCallbacks[callbackDataForAdmin]) {
+        const chatId = extractDetails.getChatId(msg);
 
         // Create Argument Object for Admin
         const adminArgs = {
@@ -87,6 +90,7 @@ bot.on(
           adminChatId: chatId,
           callbackDataForAdmin,
           userChatId,
+          paymentId,
         };
 
         await callbackHandlers.adminHandler(adminArgs);
@@ -127,16 +131,16 @@ bot.on("my_chat_member", (msg) => {
   const chat = msg.chat;
 
   if (chat.type === "group" || chat.type === "supergroup") {
-    console.log(`Bot added to group: ${chat.title}`);
-    console.log(
-      `Group username: ${chat.username || "No username (private group)"}`
+    notifyErrorToAdmin(
+      `Bot added to group: ${chat.title}\nGroup username: ${
+        chat.username || "No username (private group)"
+      }`
     );
-    notifyErrorToAdmin(`Normal Error Occured: ${JSON.stringify(error)}`);
   }
 });
 
 bot.on("polling_error", (error) => {
-  console.error(`Polling Error Occured: ${JSON.stringify(error)}`);
+  notifyErrorToAdmin(`Polling Error Occured: ${JSON.stringify(error)}`);
 });
 
 bot.on("error", (error) => {

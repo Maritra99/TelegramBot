@@ -91,3 +91,19 @@ exports.fetchTransaction = async (chatId, transactionId) => {
     },
   ]).exec();
 };
+
+exports.updatePaymentStatusForAdmin = async (
+  userChatId,
+  transactionId,
+  transactionStatus
+) => {
+  return model.TransactionsModel.findOneAndUpdate(
+    { chatId: userChatId, "transactions.transactionId": transactionId },
+    {
+      $set: {
+        "transactions.$.adminPaymentState": transactionStatus,
+      },
+    },
+    { new: true }
+  );
+};

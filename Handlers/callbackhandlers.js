@@ -12,6 +12,7 @@ const paymentSuccess = require("../CallbackQueries/Users/paymentSuccessful.js");
 const paymentFailed = require("../CallbackQueries/Users/paymentFailed.js");
 const paymentSuccessAdmin = require("../CallbackQueries/Admin/paymentSuccessfulAdmin.js");
 const paymentFailedAdmin = require("../CallbackQueries/Admin/paymentFailedAdmin.js");
+const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin.js");
 
 const callbackHandlers = {};
 
@@ -48,7 +49,9 @@ callbackHandlers.handler = async (args) => {
       userState[callbackDataForUser]
     );
   } else {
-    console.error(`User State Missing for ${data} and chatId: ${userChatId}`);
+    notifyErrorToAdmin(
+      `User State Missing for ${data} and chatId: ${userChatId}`
+    );
   }
 
   return await callbackHandlers.callbacks[callbackDataForUser](args);

@@ -1,5 +1,5 @@
 const botHelper = require("../Bot/botHelper");
-const dashboard = require("../CallbackQueries/dashboard");
+const dashboard = require("../CallbackQueries/Users/dashboard");
 const { PaymentStatus } = require("../Model/schema");
 const transactionModel = require("../Model/transactionModel");
 const userStateModel = require("../Model/userStateModel");
