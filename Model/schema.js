@@ -9,7 +9,7 @@ const PaymentStatus = (model.PaymentStatus = {
   FAILED: "FAILED",
 });
 
-schema.userState = mongoose.Schema(
+schema.UserState = mongoose.Schema(
   {
     chatId: {
       type: String,
@@ -19,14 +19,15 @@ schema.userState = mongoose.Schema(
       type: Array,
     },
   },
-  { timestamps: true, collection: "userState" }
+  { timestamps: true, collection: "userStates" }
 );
 
-schema.transaction = mongoose.Schema(
+const Transaction = mongoose.Schema(
   {
-    chatId: {
+    transactionId: {
       type: String,
       unique: true,
+      required: true,
     },
     plan: {
       name: { type: String },
@@ -48,7 +49,22 @@ schema.transaction = mongoose.Schema(
       type: Date,
     },
   },
-  { timestamps: true, collection: "transaction" }
+  {
+    _id: false,
+  }
+);
+
+schema.Transactions = mongoose.Schema(
+  {
+    chatId: {
+      type: String,
+      unique: true,
+    },
+    transactions: {
+      type: [Transaction],
+    },
+  },
+  { timestamps: true, collection: "transactions" }
 );
 
 model.createModel = async () => {

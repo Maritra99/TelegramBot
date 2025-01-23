@@ -3,6 +3,7 @@ const { PaymentStatus } = require("../Model/schema");
 const transactionModel = require("../Model/transactionModel");
 const message = require("../Static/message");
 const generatePlanData = require("../Utils/generatePlanData");
+const generateTransactionId = require("../Utils/generateTransactionId");
 
 const handlePlans = {};
 
@@ -12,12 +13,13 @@ const handlePlanSelection = async (planName, userChatId) => {
   const planObj = generatePlanData(planName);
 
   const initialTransaction = {
+    transactionId: generateTransactionId(userChatId),
     plan: planObj,
     userPaymentState: PaymentStatus.PENDING,
     adminPaymentState: PaymentStatus.PENDING,
   };
 
-  await transactionModel.updateTransaction(userChatId, initialTransaction);
+  await transactionModel.saveTransaction(userChatId, initialTransaction);
 
   return botHelper.sendMessageToUser(userChatId, messageToSend);
 };

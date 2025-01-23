@@ -3,7 +3,7 @@ const model = require("./schema");
 const userStateModel = {};
 
 userStateModel.saveUserState = async (chatId, state) => {
-  return model.userStateModel
+  return model.UserStateModel
     .findOneAndUpdate(
       { chatId },
       { $push: { state: state } },
@@ -14,7 +14,7 @@ userStateModel.saveUserState = async (chatId, state) => {
 };
 
 userStateModel.findUserStateByChatID = async (chatId) => {
-  return model.userStateModel.findOne({ chatId }).lean().exec();
+  return model.UserStateModel.findOne({ chatId }).lean().exec();
 };
 
 module.exports = userStateModel;

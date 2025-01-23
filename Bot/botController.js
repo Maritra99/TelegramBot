@@ -12,7 +12,7 @@ const allowedGroups = [process.env.ERROR_GROUP, process.env.MESSAGE_GROUP];
 bot.on(
   "text",
   catchAsyncError(async (msg) => {
-    const message = extractDetails.getMessage(msg);
+    const messageText = extractDetails.getMessage(msg);
     const chatType = extractDetails.getChatType(msg);
     const groupName = extractDetails.getGroupName(msg);
 
@@ -31,10 +31,10 @@ bot.on(
 
       const args = {
         userChatId: chatId,
-        message,
+        messageText,
       };
 
-      if (message.startsWith("/")) {
+      if (messageText.startsWith("/")) {
         commandHandler(args);
       } else {
         messageHandler(args);

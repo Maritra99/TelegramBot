@@ -18,6 +18,7 @@ module.exports = {
 
   // Message and Others......................
   start: "STARTING_BOT",
+  help: "CLICKED_HELP_COMMAND",
   entered_amount_to_invest: "ENTERED_AMOUNT_TO_INVEST",
   transaction_not_found: "TRANSACTION_NOT_FOUND",
 };
