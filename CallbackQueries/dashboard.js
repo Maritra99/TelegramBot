@@ -1,10 +1,10 @@
 const botHelper = require("../Bot/botHelper");
 const userStateModel = require("../Model/userStateModel");
 
-module.exports = async (chatId, userState) => {
+module.exports = async ({ userChatId, userState }) => {
   if (userState) {
-    await userStateModel.saveUserState(chatId, userState);
+    await userStateModel.saveUserState(userChatId, userState);
   }
 
-  await botHelper.sendMessageToUser(chatId, "📊 Here's your dashboard...");
+  await botHelper.sendMessageToUser(userChatId, "📊 Here's your dashboard...");
 };

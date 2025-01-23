@@ -1,5 +1,8 @@
 const botHelper = require("../Bot/botHelper");
 
-module.exports = async (chatId) => {
-  await botHelper.sendMessageToUser(chatId, "Returning to the main menu. 🔙");
+module.exports = async ({ userChatId }) => {
+  await botHelper.sendMessageToUser(
+    userChatId,
+    "Returning to the main menu. 🔙"
+  );
 };

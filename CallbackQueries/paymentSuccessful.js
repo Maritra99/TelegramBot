@@ -3,15 +3,18 @@ const { PaymentStatus } = require("../Model/schema");
 const transactionModel = require("../Model/transactionModel");
 const keyboard = require("../Static/Keyboard");
 
-module.exports = async (chatId, messageId, userDetails) => {
+module.exports = async ({ userChatId, messageId, userDetails }) => {
   // Once User clicks keyboard delete that
-  botHelper.deleteInlineKeyboard(chatId, messageId);
+  botHelper.deleteInlineKeyboard(userChatId, messageId);
 
   // Update Transaction Time
-  const updatedTransaction = await transactionModel.updateTransaction(chatId, {
-    userPaymentState: PaymentStatus.SUCCESS,
-    transactionTime: Date.now(),
-  });
+  const updatedTransaction = await transactionModel.updateTransaction(
+    userChatId,
+    {
+      userPaymentState: PaymentStatus.SUCCESS,
+      transactionTime: Date.now(),
+    }
+  );
 
   const messageToAdmin = `
   Payment Completed
@@ -26,7 +29,7 @@ module.exports = async (chatId, messageId, userDetails) => {
     (key) =>
       key.map((obj) => ({
         text: obj.text,
-        callback_data: obj.callback_data.concat(`_${chatId}`),
+        callback_data: obj.callback_data.concat(`_${userChatId}`),
       }))
   );
 
@@ -39,7 +42,7 @@ module.exports = async (chatId, messageId, userDetails) => {
 
   // send message to User
   return botHelper.sendMessageToUser(
-    chatId,
+    userChatId,
     "Thanks For Choosing US. Your investment is being processed. it will soon reflect in your dashboard"
   );
 };

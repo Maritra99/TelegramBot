@@ -17,62 +17,45 @@ const callbackHandlers = {};
 
 // Need to define method and UserState for any new callback. Rest is handled
 callbackHandlers.callbacks = {
-  start: async (chatId) => await start(chatId),
-  dashboard: async (chatId) => await dashboard(chatId),
-  view_plans: async (chatId) => await viewPlans(chatId),
-  back_to_menu: async (chatId) => await backToMenu(chatId),
-  select_plan_1: async (chatId) => await plan.handlePlan1Selection(chatId),
-  select_plan_2: async (chatId) => await plan.handlePlan2Selection(chatId),
-  select_plan_3: async (chatId) => await plan.handlePlan3Selection(chatId),
-  restart_process: async (chatId) => await restart(chatId),
-  confirm_amount: async (chatId, messageId) =>
-    await confirmAmount(chatId, messageId),
-  cancel_amount: async (chatId, messageId) =>
-    await cancelAmount(chatId, messageId),
-  payment_successful: async (chatId, messageId, userDetails) =>
-    await paymentSuccess(chatId, messageId, userDetails),
-  payment_failed: async (chatId, messageId) =>
-    await paymentFailed(chatId, messageId),
+  //User Callbacks
+  start: async (args) => await start(args),
+  dashboard: async (args) => await dashboard(args),
+  view_plans: async (args) => await viewPlans(args),
+  back_to_menu: async (args) => await backToMenu(args),
+  select_plan_1: async (args) => await plan.handlePlan1Selection(args),
+  select_plan_2: async (args) => await plan.handlePlan2Selection(args),
+  select_plan_3: async (args) => await plan.handlePlan3Selection(args),
+  restart_process: async (args) => await restart(args),
+  confirm_amount: async (args) => await confirmAmount(args),
+  cancel_amount: async (args) => await cancelAmount(args),
+  payment_successful: async (args) => await paymentSuccess(args),
+  payment_failed: async (args) => await paymentFailed(args),
 };
 
 callbackHandlers.AdminCallbacks = {
   //Admin Callbacks
-  admin_payment_successful: async (chatId, messageId, userChatId) =>
-    await paymentSuccessAdmin(chatId, messageId, userChatId),
-  admin_payment_failed: async (chatId, messageId, userChatId) =>
-    await paymentFailedAdmin(chatId, messageId, userChatId),
+  admin_payment_successful: async (args) => await paymentSuccessAdmin(args),
+  admin_payment_failed: async (args) => await paymentFailedAdmin(args),
 };
 
-callbackHandlers.handler = async (
-  chatId,
-  messageId,
-  callbackData,
-  userDetails
-) => {
-  if (userState[callbackData]) {
-    await userStateModel.saveUserState(chatId, userState[callbackData]);
+callbackHandlers.handler = async (args) => {
+  const { userChatId, callbackDataForUser, data } = args;
+
+  if (userState[callbackDataForUser]) {
+    await userStateModel.saveUserState(
+      userChatId,
+      userState[callbackDataForUser]
+    );
   } else {
-    console.error(`User State Missing for ${data} and chatId: ${chatId}`);
+    console.error(`User State Missing for ${data} and chatId: ${userChatId}`);
   }
 
-  return await callbackHandlers.callbacks[callbackData](
-    chatId,
-    messageId,
-    userDetails
-  );
+  return await callbackHandlers.callbacks[callbackDataForUser](args);
 };
 
-callbackHandlers.adminHandler = async (
-  chatId,
-  messageId,
-  callbackData,
-  userWhoMadeThePayment
-) => {
-  return await callbackHandlers.AdminCallbacks[callbackData](
-    chatId,
-    messageId,
-    userWhoMadeThePayment
-  );
+callbackHandlers.adminHandler = async (args) => {
+  const { callbackDataForAdmin } = args;
+  return await callbackHandlers.AdminCallbacks[callbackDataForAdmin](args);
 };
 
 module.exports = callbackHandlers;

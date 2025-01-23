@@ -6,7 +6,7 @@ const generatePlanData = require("../Utils/generatePlanData");
 
 const handlePlans = {};
 
-const handlePlanSelection = async (planName, chatId) => {
+const handlePlanSelection = async (planName, userChatId) => {
   const messageToSend = message.ASK_AMOUNT_MESSAGE;
 
   const planObj = generatePlanData(planName);
@@ -17,21 +17,21 @@ const handlePlanSelection = async (planName, chatId) => {
     adminPaymentState: PaymentStatus.PENDING,
   };
 
-  await transactionModel.updateTransaction(chatId, initialTransaction);
+  await transactionModel.updateTransaction(userChatId, initialTransaction);
 
-  return botHelper.sendMessageToUser(chatId, messageToSend);
+  return botHelper.sendMessageToUser(userChatId, messageToSend);
 };
 
-handlePlans.handlePlan1Selection = async (chatId) => {
-  return await handlePlanSelection("Plan 1", chatId);
+handlePlans.handlePlan1Selection = async ({ userChatId }) => {
+  return await handlePlanSelection("Plan 1", userChatId);
 };
 
-handlePlans.handlePlan2Selection = async (chatId) => {
-  return await handlePlanSelection("Plan 2", chatId);
+handlePlans.handlePlan2Selection = async ({ userChatId }) => {
+  return await handlePlanSelection("Plan 2", userChatId);
 };
 
-handlePlans.handlePlan3Selection = async (chatId) => {
-  return await handlePlanSelection("Plan 3", chatId);
+handlePlans.handlePlan3Selection = async ({ userChatId }) => {
+  return await handlePlanSelection("Plan 3", userChatId);
 };
 
 module.exports = handlePlans;

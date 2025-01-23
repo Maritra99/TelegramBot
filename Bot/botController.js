@@ -40,12 +40,22 @@ bot.on(
 bot.on(
   "callback_query",
   catchAsyncError(async (callbackQuery) => {
-    const { message: messageObj, data, from } = callbackQuery;
-    const chatId = extractDetails.getChatId(messageObj);
-    const messageIdToDeletePreviousCallback =
-      extractDetails.getMessageId(messageObj);
+    const {
+      message: messageObj,
+      data: callbackData,
+      from: userDetails,
+    } = callbackQuery;
+
+    // Extract necessary Details
+    const messageId = extractDetails.getMessageId(messageObj);
     const chatType = extractDetails.getChatType(messageObj);
     const groupName = extractDetails.getGroupName(messageObj);
+
+    // Create argument Object to pass to further method
+    const args = {
+      messageId,
+      userDetails,
+    };
 
     // Check if callback is coming from a group, group should be Admin's group
     if (chatType === "group" || chatType === "supergroup") {
@@ -54,42 +64,51 @@ bot.on(
       }
 
       // Callbacks for admin should always starts with admin_ and ends with _chatIdOfUser
-      if (data.startsWith("admin_")) {
-        const parts = data.split("_");
-        const callback = parts.slice(0, -1).join("_");
-        const userWhoMadeThePayment = parts[parts.length - 1];
+      if (callbackData.startsWith("admin_")) {
+        const chatId = extractDetails.getChatId(messageObj);
 
-        await callbackHandlers.adminHandler(
-          chatId,
-          messageIdToDeletePreviousCallback,
-          callback,
-          userWhoMadeThePayment
-        );
+        // Extract userChatId from callBackData
+        const parts = callbackData.split("_");
+        const callbackDataForAdmin = parts.slice(0, -1).join("_");
+        const userChatId = parts[parts.length - 1];
+
+        // Create Argument Object for Admin
+        const adminArgs = {
+          ...args,
+          adminChatId: chatId,
+          callbackDataForAdmin,
+          userChatId,
+        };
+
+        await callbackHandlers.adminHandler(adminArgs);
       }
       // If callback is coming from private chat process normally
     } else if (chatType === "private") {
+      const chatId = extractDetails.getChatId(messageObj);
+
       const isMember = await memberShipHelper.checkMemberShip(chatId);
 
       if (!isMember) {
         return memberShipHelper.handleWithoutMemberShip(chatId);
       }
 
-      if (callbackHandlers.callbacks[data]) {
-        await callbackHandlers.handler(
-          chatId,
-          messageIdToDeletePreviousCallback,
-          data,
-          from
-        );
+      const userArgs = {
+        ...args,
+        callbackDataForUser: callbackData,
+        userChatId: chatId,
+      };
+
+      if (callbackHandlers.callbacks[callbackData]) {
+        await callbackHandlers.handler(userArgs);
       } else {
         await botHelper.sendMessageToUser(
           chatId,
           "Oops! I didn't recognize that action. Please try again. 🤔"
         );
       }
-
-      await botHelper.answerCallbackQuery(callbackQuery.id);
     }
+
+    await botHelper.answerCallbackQuery(callbackQuery.id);
   })
 );
 
