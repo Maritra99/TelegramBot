@@ -10,9 +10,9 @@ module.exports = async ({ userChatId, messageText }) => {
 
   // States after which free text can be allowed (basically amount can be entered)
   const allowedStateForPaymentAmount = [
-    userState.select_plan_1,
-    userState.select_plan_2,
-    userState.select_plan_3,
+    userState.plan_one,
+    userState.plan_two,
+    userState.plan_three,
   ];
 
   if (

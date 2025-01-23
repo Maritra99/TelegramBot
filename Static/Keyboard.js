@@ -24,11 +24,11 @@ keyboard.START_MESSAGE_KEYBOARD = [
 
 keyboard.PLANS_KEYBOARD = [
   [
-    { text: "💰 Plan 1", callback_data: "select_plan_1" },
-    { text: "💼 Plan 2", callback_data: "select_plan_2" },
+    { text: "💰 Plan 1", callback_data: "plan_one" },
+    { text: "💼 Plan 2", callback_data: "plan_two" },
   ],
-  [{ text: "📊 Plan 3", callback_data: "select_plan_3" }],
-  [{ text: "🔙 Back to Menu", callback_data: "back_to_menu" }],
+  [{ text: "📊 Plan 3", callback_data: "plan_three" }],
+  [{ text: "🔙 Back to Menu", callback_data: "back_menu" }],
 ];
 
 keyboard.CONFIRM_KEY_BOARD = [
@@ -59,11 +59,11 @@ keyboard.PAYMENT_CONFIRMATION_FOR_ADMIN_KEY_BOARD = [
   [
     {
       text: "✅ Payment Successful",
-      callback_data: "admin_payment_successful",
+      callback_data: "approve_payment",
     },
     {
       text: "❌ Payment Failed",
-      callback_data: "admin_payment_failed",
+      callback_data: "reject_payment",
     },
   ],
 ];

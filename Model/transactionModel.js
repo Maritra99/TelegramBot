@@ -8,11 +8,31 @@ exports.updateAmountInTransaction = async (chatId, amount) => {
   );
 };
 
-exports.deleteTransactionByTxnId = async (chatId) => {
+exports.updatePaymentTimeAndStatus = async (
+  chatId,
+  transactionId,
+  transactionTime,
+  transactionStatus
+) => {
   return model.TransactionsModel.findOneAndUpdate(
-    { chatId },
+    { chatId, "transactions.transactionId": transactionId },
     {
-      $pull: { "transaction.$.userPaymentState": model.PaymentStatus.PENDING },
+      $set: {
+        "transactions.$.transactionTime": transactionTime,
+        "transactions.$.userPaymentState": transactionStatus,
+      },
+    },
+    { new: true }
+  );
+};
+
+exports.deleteTransaction = async (chatId, transactionId) => {
+  return model.TransactionsModel.findOneAndUpdate(
+    { chatId: chatId.toString() },
+    {
+      $pull: {
+        transactions: { transactionId: transactionId },
+      },
     },
     { new: true }
   )
@@ -42,6 +62,32 @@ exports.saveTransaction = async (chatId, newTransaction) => {
   ]);
 };
 
-exports.fetchTransactionByChatId = async (chatId) => {
-  return model.TransactionsModel.findOne({ chatId }).lean().exec();
+exports.fetchTransaction = async (chatId, transactionId) => {
+  return model.TransactionsModel.aggregate([
+    {
+      $match: {
+        chatId: chatId.toString(),
+      },
+    },
+    { $unwind: "$transactions" },
+    {
+      $match: {
+        "transactions.transactionId": transactionId.toString(),
+      },
+    },
+    {
+      $addFields: {
+        planName: "$transactions.plan.name",
+        amount: "$transactions.amount",
+        transactionId: "$transactions.transactionId",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        __v: 0,
+        transactions: 0,
+      },
+    },
+  ]).exec();
 };

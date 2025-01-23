@@ -15,16 +15,17 @@ const paymentFailedAdmin = require("../CallbackQueries/paymentFailedAdmin.js");
 
 const callbackHandlers = {};
 
-// Need to define method and UserState for any new callback. Rest is handled
+// Need to define method and UserState for any new callback. Rest is handled.
+// Callback sould be of maximum 2 words
 callbackHandlers.callbacks = {
   //User Callbacks
   start: async (args) => await start(args),
   dashboard: async (args) => await dashboard(args),
   view_plans: async (args) => await viewPlans(args),
-  back_to_menu: async (args) => await backToMenu(args),
-  select_plan_1: async (args) => await plan.handlePlan1Selection(args),
-  select_plan_2: async (args) => await plan.handlePlan2Selection(args),
-  select_plan_3: async (args) => await plan.handlePlan3Selection(args),
+  back_menu: async (args) => await backToMenu(args),
+  plan_one: async (args) => await plan.handlePlan1Selection(args),
+  plan_two: async (args) => await plan.handlePlan2Selection(args),
+  plan_three: async (args) => await plan.handlePlan3Selection(args),
   restart_process: async (args) => await restart(args),
   confirm_amount: async (args) => await confirmAmount(args),
   cancel_amount: async (args) => await cancelAmount(args),
@@ -34,8 +35,8 @@ callbackHandlers.callbacks = {
 
 callbackHandlers.AdminCallbacks = {
   //Admin Callbacks
-  admin_payment_successful: async (args) => await paymentSuccessAdmin(args),
-  admin_payment_failed: async (args) => await paymentFailedAdmin(args),
+  approve_payment: async (args) => await paymentSuccessAdmin(args),
+  reject_payment: async (args) => await paymentFailedAdmin(args),
 };
 
 callbackHandlers.handler = async (args) => {

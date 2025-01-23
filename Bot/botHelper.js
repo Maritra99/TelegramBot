@@ -31,7 +31,10 @@ botHelper.sendKeyboardToUser = async (chatId, text, buttons) => {
 
 botHelper.answerCallbackQuery = async (callbackQueryId) => {
   try {
-    return await bot.answerCallbackQuery(callbackQueryId);
+    return await bot.answerCallbackQuery(callbackQueryId, {
+      text: "Processing your request...",
+      show_alert: false,
+    });
   } catch (error) {
     console.error(`Error answering callback query: ${JSON.stringify(error)}`);
     throw error;

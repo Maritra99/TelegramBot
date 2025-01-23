@@ -24,7 +24,7 @@ handlepayment.handleEnteredPaymentAmount = async (userChatId, messageText) => {
       investmentAmount
     );
 
-    let messageToSend;
+    let messageToSend, keyboardToSend;
     if (updatedTransaction) {
       if (
         updatedTransaction.transactions &&
@@ -43,12 +43,21 @@ handlepayment.handleEnteredPaymentAmount = async (userChatId, messageText) => {
             investmentAmount +
             (investmentAmount * parseFloat(transaction.plan.interest)) / 100,
         });
+
+        keyboardToSend = keyboard.CONFIRM_KEY_BOARD.map((key) =>
+          key.map((obj) => ({
+            text: obj.text,
+            callback_data: obj.callback_data.concat(
+              `_${transaction.transactionId}`
+            ),
+          }))
+        );
       }
 
       return botHelper.sendKeyboardToUser(
         userChatId,
         messageToSend,
-        keyboard.CONFIRM_KEY_BOARD
+        keyboardToSend
       );
     }
   } else {

@@ -1,27 +1,17 @@
 const bot = require("../Bot/botConfig");
 const keyboard = require("../Static/Keyboard");
-const formatError = (err, chatId, messageSentToBot) => ({
-  Error: err,
-  Message: err.message,
-  Stack: err.stack,
-  Details: err.details,
-  ChatID: chatId,
-  MessageSentToBot: messageSentToBot,
-});
+const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin");
 
 module.exports = async (error, chatId, messageSentToBot) => {
-  console.error(
-    "Error Occured: ",
-    JSON.stringify(formatError(error, chatId, messageSentToBot))
-  );
+  console.error("Error Occured: ", JSON.stringify(error));
 
-  const adminChatId = process.env.ERROR_GROUP_CHAT_ID;
-  if (adminChatId) {
-    bot.sendMessage(
-      adminChatId,
-      JSON.stringify(formatError(error, chatId, messageSentToBot) || "")
-    );
-  }
+  const messagetoAdmin = `In GlobalError Handler.\n\nMessage: ${JSON.stringify(
+    error && error.message
+  )}\n\nError: ${JSON.stringify(error)}\n\n chatId: ${JSON.stringify(
+    chatId
+  )}\n\n messageSentToBot: ${JSON.stringify(messageSentToBot)}`;
+
+  notifyErrorToAdmin(messagetoAdmin);
 
   const errorMessageForUser =
     "Oops! Something went wrong. Please try again later.";

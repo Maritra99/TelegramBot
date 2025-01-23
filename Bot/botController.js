@@ -6,6 +6,8 @@ const memberShipHelper = require("../Utils/memberShipHelper");
 const botHelper = require("./botHelper");
 const catchAsyncError = require("../Error/catchAsyncError");
 const callbackHandlers = require("../Handlers/callbackhandlers");
+const extractChatIdAndCallbackData = require("../Utils/extractChatIdAndCallbackData");
+const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin");
 
 const allowedGroups = [process.env.ERROR_GROUP, process.env.MESSAGE_GROUP];
 
@@ -52,6 +54,9 @@ bot.on(
       from: userDetails,
     } = callbackQuery;
 
+    // acknowledge the query early to avoid timeOuts
+    await botHelper.answerCallbackQuery(callbackQuery.id);
+
     // Extract necessary Details
     const messageId = extractDetails.getMessageId(msg);
     const chatType = extractDetails.getChatType(msg);
@@ -73,10 +78,8 @@ bot.on(
       if (callbackData.startsWith("admin_")) {
         const chatId = extractDetails.getChatId(msg);
 
-        // Extract userChatId from callBackData
-        const parts = callbackData.split("_");
-        const callbackDataForAdmin = parts.slice(0, -1).join("_");
-        const userChatId = parts[parts.length - 1];
+        const { endDigit: userChatId, startCallback: callbackDataForAdmin } =
+          extractChatIdAndCallbackData(callbackData);
 
         // Create Argument Object for Admin
         const adminArgs = {
@@ -98,13 +101,17 @@ bot.on(
         return memberShipHelper.handleWithoutMemberShip(chatId);
       }
 
+      const { startCallback: callbackDataForUser, endDigit: paymentId } =
+        extractChatIdAndCallbackData(callbackData);
+
       const userArgs = {
         ...args,
-        callbackDataForUser: callbackData,
+        callbackDataForUser,
         userChatId: chatId,
+        paymentId,
       };
 
-      if (callbackHandlers.callbacks[callbackData]) {
+      if (callbackHandlers.callbacks[callbackDataForUser]) {
         await callbackHandlers.handler(userArgs);
       } else {
         await botHelper.sendMessageToUser(
@@ -113,8 +120,6 @@ bot.on(
         );
       }
     }
-
-    await botHelper.answerCallbackQuery(callbackQuery.id);
   })
 );
 
@@ -126,6 +131,7 @@ bot.on("my_chat_member", (msg) => {
     console.log(
       `Group username: ${chat.username || "No username (private group)"}`
     );
+    notifyErrorToAdmin(`Normal Error Occured: ${JSON.stringify(error)}`);
   }
 });
 
@@ -135,4 +141,5 @@ bot.on("polling_error", (error) => {
 
 bot.on("error", (error) => {
   console.error(`Normal Error Occured: ${JSON.stringify(error)}`);
+  notifyErrorToAdmin(`Normal Error Occured: ${JSON.stringify(error)}`);
 });
