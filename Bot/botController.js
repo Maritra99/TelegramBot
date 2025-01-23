@@ -13,7 +13,6 @@ bot.on(
   "text",
   catchAsyncError(async (msg) => {
     const message = extractDetails.getMessage(msg);
-    const chatId = extractDetails.getChatId(msg);
     const chatType = extractDetails.getChatType(msg);
     const groupName = extractDetails.getGroupName(msg);
 
@@ -22,16 +21,23 @@ bot.on(
         return;
       }
     } else if (chatType === "private") {
+      const chatId = extractDetails.getChatId(msg);
+
       const isMember = await memberShipHelper.checkMemberShip(chatId);
 
       if (!isMember) {
         return memberShipHelper.handleWithoutMemberShip(chatId);
       }
 
+      const args = {
+        userChatId: chatId,
+        message,
+      };
+
       if (message.startsWith("/")) {
-        commandHandler(chatId, message);
+        commandHandler(args);
       } else {
-        messageHandler(chatId, message);
+        messageHandler(args);
       }
     }
   })
@@ -41,15 +47,15 @@ bot.on(
   "callback_query",
   catchAsyncError(async (callbackQuery) => {
     const {
-      message: messageObj,
+      message: msg,
       data: callbackData,
       from: userDetails,
     } = callbackQuery;
 
     // Extract necessary Details
-    const messageId = extractDetails.getMessageId(messageObj);
-    const chatType = extractDetails.getChatType(messageObj);
-    const groupName = extractDetails.getGroupName(messageObj);
+    const messageId = extractDetails.getMessageId(msg);
+    const chatType = extractDetails.getChatType(msg);
+    const groupName = extractDetails.getGroupName(msg);
 
     // Create argument Object to pass to further method
     const args = {
@@ -65,7 +71,7 @@ bot.on(
 
       // Callbacks for admin should always starts with admin_ and ends with _chatIdOfUser
       if (callbackData.startsWith("admin_")) {
-        const chatId = extractDetails.getChatId(messageObj);
+        const chatId = extractDetails.getChatId(msg);
 
         // Extract userChatId from callBackData
         const parts = callbackData.split("_");
@@ -84,7 +90,7 @@ bot.on(
       }
       // If callback is coming from private chat process normally
     } else if (chatType === "private") {
-      const chatId = extractDetails.getChatId(messageObj);
+      const chatId = extractDetails.getChatId(msg);
 
       const isMember = await memberShipHelper.checkMemberShip(chatId);
 
