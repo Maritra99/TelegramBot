@@ -29,19 +29,13 @@ module.exports = async ({ adminChatId, messageId, userChatId, paymentId }) => {
     amount = transactionObj.amount;
   }
 
-  // Delete Inline Keyboard for Admin
-  botHelper.deleteInlineKeyboard(adminChatId, messageId);
+  // Delete Message + Inline Keyboard for Admin
+  botHelper.deleteMessage(adminChatId, messageId);
 
-  const messageToSendToAdmin = `Payment Marked as Success\nUser Id: ${JSON.stringify(
+  const messageToSendToAdmin = `Payment Marked as Success\nUser Id: ${String(
     userChatId
-  )}\nPayment Id: ${JSON.stringify(paymentId)}\nAmount: ₹${JSON.stringify(
-    amount
-  )}`;
+  )}\nPayment Id: ${String(paymentId)}\nAmount: ₹${String(amount)}`;
 
   // Acknowledge Admin
-  return await botHelper.editMessageText(
-    messageToSendToAdmin,
-    adminChatId,
-    messageId
-  );
+  return await botHelper.sendMessageToUser(adminChatId, messageToSendToAdmin);
 };

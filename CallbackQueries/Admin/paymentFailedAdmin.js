@@ -37,19 +37,13 @@ module.exports = async ({ adminChatId, messageId, userChatId, paymentId }) => {
     )} has been marked as failed by the admin. Please contact support.`
   );
 
-  // Delete Inline Keyboard for Admin
-  botHelper.deleteInlineKeyboard(adminChatId, messageId);
+  // Delete Message + Inline Keyboard for Admin
+  botHelper.deleteMessage(adminChatId, messageId);
 
-  const messageToSendToAdmin = `Payment Marked as Failed\nUser Id: ${JSON.stringify(
+  const messageToSendToAdmin = `Payment Marked as Failed\nUser Id: ${String(
     userChatId
-  )}\nPayment Id: ${JSON.stringify(paymentId)}\nAmount: ₹${JSON.stringify(
-    amount
-  )}`;
+  )}\nPayment Id: ${String(paymentId)}\nAmount: ₹${String(amount)}`;
 
   // Confirm admin action
-  return await botHelper.editMessageText(
-    messageToSendToAdmin,
-    adminChatId,
-    messageId
-  );
+  return await botHelper.sendMessageToUser(adminChatId, messageToSendToAdmin);
 };

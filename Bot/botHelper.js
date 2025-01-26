@@ -65,6 +65,15 @@ botHelper.deleteInlineKeyboard = async (chatId, messageId) => {
   }
 };
 
+botHelper.deleteMessage = async (chatId, messageId) => {
+  try {
+    return await bot.deleteMessage(chatId, messageId, {});
+  } catch (error) {
+    console.error(`Error Sending Image to User: ${JSON.stringify(error)}`);
+    throw error;
+  }
+};
+
 botHelper.editMessageText = async (message, chatId, messageId) => {
   try {
     await bot.editMessageText(message, {
