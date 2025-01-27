@@ -5,7 +5,7 @@ module.exports = (callback) => {
   let midDigit;
   let endDigit;
 
-  if (parts.length === 2) {
+  if (parts.length <= 2) {
     startCallback = callback;
     endDigit = undefined;
   } else if (parts.length === 3) {

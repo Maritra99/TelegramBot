@@ -22,6 +22,16 @@ keyboard.START_MESSAGE_KEYBOARD = [
   ],
 ];
 
+keyboard.DASHBOARD_KEYBOARD = [
+  [{ text: "🎯 New Investment", callback_data: "view_plans" }],
+  [
+    { text: "📈 Referral Stats", callback_data: "referral_stats" },
+    { text: "🎁 ₹50 Bonus Status", callback_data: "bonus_status" },
+  ],
+  [{ text: "📜 Transaction History", callback_data: "transaction_history" }],
+  [{ text: "🔙 Back to Main Menu", callback_data: "start_message" }],
+];
+
 keyboard.PLANS_KEYBOARD = [
   [
     { text: "💰 Plan 1", callback_data: "plan_one" },

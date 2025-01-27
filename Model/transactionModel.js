@@ -107,3 +107,7 @@ exports.updatePaymentStatusForAdmin = async (
     { new: true }
   );
 };
+
+exports.getActiveInvestments = async (chatId) => {
+  return await model.TransactionsModel.findOne({ chatId });
+};

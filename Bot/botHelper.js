@@ -13,7 +13,11 @@ botHelper.isUserAlreadyMember = async (CHANNEL_USERNAME, chatId) => {
 
 botHelper.sendMessageToUser = async (chatId, text, options = {}) => {
   try {
-    return await bot.sendMessage(chatId, text, options);
+    const opt = {
+      ...options,
+      parse_mode: "HTML",
+    };
+    return await bot.sendMessage(chatId, text, opt);
   } catch (error) {
     console.error(`Error in Sending Message: ${JSON.stringify(error)}`);
     throw error;

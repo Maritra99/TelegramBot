@@ -15,6 +15,7 @@ module.exports = {
   restart_process: "CLICKED_RESTART",
   payment_successful: "PAYMENT_SUCCESSFUL",
   payment_failed: "PAYMENT_FAILED",
+  transaction_history: "TRANSACTION_HISTORY",
 
   // Message and Others......................
   start: "STARTING_BOT",

@@ -12,6 +12,7 @@ const paymentSuccess = require("../CallbackQueries/Users/paymentSuccessful.js");
 const paymentFailed = require("../CallbackQueries/Users/paymentFailed.js");
 const paymentSuccessAdmin = require("../CallbackQueries/Admin/paymentSuccessfulAdmin.js");
 const paymentFailedAdmin = require("../CallbackQueries/Admin/paymentFailedAdmin.js");
+const transactionHistory = require("../CallbackQueries/Admin/transactionHistory.js");
 const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin.js");
 
 const callbackHandlers = {};
@@ -32,6 +33,10 @@ callbackHandlers.callbacks = {
   cancel_amount: async (args) => await cancelAmount(args),
   payment_successful: async (args) => await paymentSuccess(args),
   payment_failed: async (args) => await paymentFailed(args),
+  transaction_history: async (args) => await transactionHistory(args),
+  // start_message,
+  // bonus_status,
+  // referral_stats,
 };
 
 callbackHandlers.AdminCallbacks = {
@@ -41,7 +46,7 @@ callbackHandlers.AdminCallbacks = {
 };
 
 callbackHandlers.handler = async (args) => {
-  const { userChatId, callbackDataForUser, data } = args;
+  const { userChatId, callbackDataForUser } = args;
 
   if (userState[callbackDataForUser]) {
     await userStateModel.saveUserState(
@@ -50,7 +55,7 @@ callbackHandlers.handler = async (args) => {
     );
   } else {
     notifyErrorToAdmin(
-      `User State Missing for ${data} and chatId: ${userChatId}`
+      `User State Missing for ${callbackDataForUser} and chatId: ${userChatId}`
     );
   }
 
