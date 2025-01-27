@@ -5,25 +5,51 @@ const keyboard = require("../../Static/Keyboard");
 const message = require("../../Static/message");
 const { notifyErrorToAdmin } = require("../../Utils/notifyToAdmin");
 const dashboard = require("./dashboard");
+const calculateRedemptionTime = require("../../Utils/calculateRedemtionTime");
 
 module.exports = async ({ userChatId, messageId, userDetails, paymentId }) => {
   // Once User clicks keyboard delete that
   botHelper.deleteInlineKeyboard(userChatId, messageId);
 
+  const transactionData = await transactionModel.fetchTransaction(
+    userChatId,
+    paymentId
+  );
+
+  if (!transactionData[0]) {
+    await botHelper.sendMessageToUser(
+      userChatId,
+      message.TRANSACTION_NOT_FOUND
+    );
+
+    notifyErrorToAdmin(
+      `Transaction not Found in Payment Confirmation for User Id: ${String(
+        userChatId
+      )} and Txn id: ${String(paymentId)}`
+    );
+  }
+
+  // Derive redemptionTime based on transactionTime and plan duration
+  const { planDuration } = transactionData[0];
+
+  const transactionTime = new Date();
+  const redemptionTime = calculateRedemptionTime(transactionTime, planDuration);
+
   // Update Transaction Time
   const updatedTransaction = await transactionModel.updatePaymentTimeAndStatus(
     userChatId,
     paymentId,
-    Date.now(),
+    transactionTime,
+    redemptionTime,
     model.PaymentStatus.SUCCESS
   );
 
   if (!updatedTransaction) {
-    const messageToAdmin = `Transaction Not Found While Time Updating\nuserChatId: ${JSON.stringify(
+    const messageToAdmin = `Transaction Not Found While Time Updating\nuserChatId: ${String(
       userChatId
-    )}\nmessageId: ${JSON.stringify(messageId)}\nuserDetails: ${JSON.stringify(
+    )}\nmessageId: ${String(messageId)}\nuserDetails: ${String(
       userDetails
-    )}\npaymentId: ${JSON.stringify(paymentId)}`;
+    )}\npaymentId: ${String(paymentId)}`;
 
     notifyErrorToAdmin(messageToAdmin);
 
@@ -58,13 +84,13 @@ module.exports = async ({ userChatId, messageId, userDetails, paymentId }) => {
       }))
   );
 
-  const messageToAdmin = `Payment Completed.\nUser: ${JSON.stringify(
+  const messageToAdmin = `Payment Completed.\nUser: ${String(
     userDetails.first_name
-  )} ${JSON.stringify(userDetails.last_name)}\nUsername: ${JSON.stringify(
+  )} ${String(userDetails.last_name)}\nUsername: ${String(
     userDetails.username
-  )}\nUser Id: ${JSON.stringify(userDetails.id)}\nPayment Id: ${JSON.stringify(
+  )}\nUser Id: ${String(userDetails.id)}\nPayment Id: ${String(
     paymentId
-  )}\nPayment: ${JSON.stringify(amount)}`;
+  )}\nPayment: ${String(amount)}`;
 
   // Send Keyboard to Admin to Update Status of payment
   botHelper.sendKeyboardToUser(

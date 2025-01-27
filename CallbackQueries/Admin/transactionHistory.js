@@ -28,7 +28,7 @@ module.exports = async ({ userChatId, userState }) => {
     return botHelper.sendKeyboardToUser(
       userChatId,
       noTransactionMessage,
-      keyboard.DASHBOARD_KEYBOARD
+      keyboard.TRANSACTION_HISTORY
     );
   }
 
@@ -61,17 +61,23 @@ module.exports = async ({ userChatId, userState }) => {
     formattedMessage += `<i>---------------------------------------------</i>\n`;
 
     transactions.forEach((investment) => {
-      formattedMessage += `<b>🔹 Txn Id:</b> <code>${
-        investment.transactionId
-      }</code>\n<b>📋 Plan:</b> ${investment.plan.name}\n<b>💰 Interest:</b> ${
-        investment.plan.interest
-      }%\n<b>⏳ Duration:</b> ${
-        investment.plan.duration
-      } days\n<b>💵 Amount:</b> ₹${
-        investment.amount
-      } INR\n<b>📅 Time:</b> ${new Date(
-        investment.transactionTime
-      ).toLocaleString()}\n\n`;
+      formattedMessage +=
+        `<b>🔹 Txn Id:</b> <code>${
+          investment.transactionId
+        }</code>\n<b>📋 Plan:</b> ${
+          investment.plan.name
+        }\n<b>💰 Interest:</b> ${
+          investment.plan.interest
+        }%\n<b>⏳ Duration:</b> ${
+          investment.plan.duration
+        } days\n<b>💵 Amount:</b> ₹${
+          investment.amount
+        } INR\n<b>📅 Time:</b> ${new Date(
+          investment.transactionTime
+        ).toLocaleString()}\n` +
+        `<b>⏳ Maturity:</b> ${new Date(
+          investment.redemptionTime
+        ).toLocaleString()}\n\n`;
     });
 
     return formattedMessage;
@@ -87,6 +93,6 @@ module.exports = async ({ userChatId, userState }) => {
   await botHelper.sendKeyboardToUser(
     userChatId,
     message.trim(),
-    keyboard.DASHBOARD_KEYBOARD
+    keyboard.TRANSACTION_HISTORY
   );
 };

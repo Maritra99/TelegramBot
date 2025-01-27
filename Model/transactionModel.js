@@ -12,6 +12,7 @@ exports.updatePaymentTimeAndStatus = async (
   chatId,
   transactionId,
   transactionTime,
+  redemptionTime,
   transactionStatus
 ) => {
   return model.TransactionsModel.findOneAndUpdate(
@@ -19,6 +20,7 @@ exports.updatePaymentTimeAndStatus = async (
     {
       $set: {
         "transactions.$.transactionTime": transactionTime,
+        "transactions.$.redemptionTime": redemptionTime,
         "transactions.$.userPaymentState": transactionStatus,
       },
     },
@@ -78,6 +80,8 @@ exports.fetchTransaction = async (chatId, transactionId) => {
     {
       $addFields: {
         planName: "$transactions.plan.name",
+        planDuration: "$transactions.plan.duration",
+        planInterest: "$transactions.plan.interest",
         amount: "$transactions.amount",
         transactionId: "$transactions.transactionId",
       },

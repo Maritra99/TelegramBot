@@ -1,8 +1,9 @@
-const botHelper = require("../../Bot/botHelper");
+const start = require("../../Command/start");
+const userState = require("../../Static/userState");
 
 module.exports = async ({ userChatId }) => {
-  await botHelper.sendMessageToUser(
+  return await start({
     userChatId,
-    "Returning to the main menu. 🔙"
-  );
+    userState: userState["back_menu"],
+  });
 };

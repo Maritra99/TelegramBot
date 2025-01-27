@@ -23,13 +23,15 @@ keyboard.START_MESSAGE_KEYBOARD = [
 ];
 
 keyboard.DASHBOARD_KEYBOARD = [
-  [{ text: "🎯 New Investment", callback_data: "view_plans" }],
   [
-    { text: "📈 Referral Stats", callback_data: "referral_stats" },
-    { text: "🎁 ₹50 Bonus Status", callback_data: "bonus_status" },
+    { text: "🎯 New Investment", callback_data: "view_plans" },
+    { text: "📜 Transaction History", callback_data: "transaction_history" },
   ],
-  [{ text: "📜 Transaction History", callback_data: "transaction_history" }],
-  [{ text: "🔙 Back to Main Menu", callback_data: "start_message" }],
+  [{ text: "🔙 Back to Main Menu", callback_data: "back_menu" }],
+];
+
+keyboard.TRANSACTION_HISTORY = [
+  [{ text: "🔙 Back to Main Menu", callback_data: "back_menu" }],
 ];
 
 keyboard.PLANS_KEYBOARD = [

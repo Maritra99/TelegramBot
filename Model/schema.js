@@ -48,6 +48,9 @@ const Transaction = mongoose.Schema(
     transactionTime: {
       type: Date,
     },
+    redemptionTime: {
+      type: Date,
+    },
   },
   {
     _id: false,
