@@ -1,16 +1,16 @@
 const message = {};
 
 message.START_MESSAGE =
-  "Introducing the 12% Interest Bot.\n\nYour automated financial assistant for growing investments at a 12% annual interest rate.";
+  "<b>🔒 Invest Securely, Earn Reliably.</b>\n\n📈 Invest and earn a stable 12% annual return. Simple, secure, and automated. Let your money grow!";
 
 message.JOIN_CHANNEL =
-  "🌟 Join Our Channel to Use the Bot! 🚀\n\n📢 Channel Name: Demo Channel\n\nLet's grow together! 💰";
+  "🌟 Join Our Channel to Use the Bot! 🚀\n\n📢 Channel Name: {channelName}\n\nLet's grow together! 💰";
 
 message.UNKNOWN_BUTTON =
   "Oops! 🙊 That seems unfamiliar. I'm here to assist with your investments. For help or questions, type 'Help' or explore other options below";
 
 message.DASHBOARD_MESSAGE =
-  "🌟 Welcome to the 12% Interest Bot! 🚀\n\nHere's your current investment overview:\n\n-Total Invested Amount: 10000 💵\n- Current Balance: 10020 💰\n- Accrued Interest: 20 📈\n\nFeel free to explore your investments and manage them efficiently with our bot. If you have any questions or need assistance, just type 'Help'!";
+  "💼 <b>Your Investment Summary</b>\n\n<b>💼 Current Investments:</b>\n<b>💰 Active Investments:</b> <i>{active}</i>\n<b>⏳ Pending Investments:</b> <i>{pending}</i>\n<b>❌ Failed Investments:</b> <i>{failed}</i>\n\n<b>🎯 Start Investing:</b>\nExplore our available plans and begin your investment journey today! 🚀\n\n💡 Use <b>New Investment</b> to find the best option for you.";
 
 message.PLAN_MESSAGE =
   "🎉 **Choose Your Investment Plan & Start Earning Today!** 💸\n\n🔹 **Plan 1: Quick & Rewarding!** 🔹\n💰 **Investment Amount:** *Starts from ₹50*\n⏳ **Duration:** *10 days*\n📈 **Expected Profit:** *10%*\n🔥 **Fast returns in just 10 days!**\n\n🔸 **Plan 2: Long-Term Growth!** 🔸\n💰 **Investment Amount:** *Starts from ₹50* \n⏳ **Duration:** *30 days*\n📈 **Expected Profit:** *30%*\n🌱 **A steady growth with bigger rewards in 30 days!**\n\n🌟 **Plan 3: Maximum Growth!** 🌟\n💰 **Investment Amount:** *Starts from ₹50*\n⏳ **Duration:** *90 days*\n📈 **Expected Profit:** *90%*\n🌳 **The ultimate growth over 3 months — for those who want big returns!**\n\n✨ **Which plan fits your goals?** ✨\n✅ *Fast, steady, or maximum returns — Choice is yours!*\n\n🔘 *Tap below to invest today!*";

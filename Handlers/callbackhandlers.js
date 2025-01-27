@@ -34,7 +34,6 @@ callbackHandlers.callbacks = {
   payment_successful: async (args) => await paymentSuccess(args),
   payment_failed: async (args) => await paymentFailed(args),
   transaction_history: async (args) => await transactionHistory(args),
-  // start_message,
   // bonus_status,
   // referral_stats,
 };
