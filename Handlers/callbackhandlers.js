@@ -12,7 +12,7 @@ const paymentSuccess = require("../CallbackQueries/Users/paymentSuccessful.js");
 const paymentFailed = require("../CallbackQueries/Users/paymentFailed.js");
 const paymentSuccessAdmin = require("../CallbackQueries/Admin/paymentSuccessfulAdmin.js");
 const paymentFailedAdmin = require("../CallbackQueries/Admin/paymentFailedAdmin.js");
-const transactionHistory = require("../CallbackQueries/Admin/transactionHistory.js");
+const transactionHistory = require("../CallbackQueries/Users/transactionHistory.js");
 const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin.js");
 
 const callbackHandlers = {};

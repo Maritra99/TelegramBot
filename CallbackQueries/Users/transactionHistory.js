@@ -61,23 +61,31 @@ module.exports = async ({ userChatId, userState }) => {
     formattedMessage += `<i>---------------------------------------------</i>\n`;
 
     transactions.forEach((investment) => {
-      formattedMessage +=
-        `<b>🔹 Txn Id:</b> <code>${
-          investment.transactionId
-        }</code>\n<b>📋 Plan:</b> ${
-          investment.plan.name
-        }\n<b>💰 Interest:</b> ${
-          investment.plan.interest
-        }%\n<b>⏳ Duration:</b> ${
-          investment.plan.duration
-        } days\n<b>💵 Amount:</b> ₹${
-          investment.amount
-        } INR\n<b>📅 Time:</b> ${new Date(
+      if (investment.transactionId) {
+        formattedMessage += `<b>🔹 Txn Id:</b> <code>${investment.transactionId}</code>\n`;
+      }
+      if (investment.plan && investment.plan.name) {
+        formattedMessage += `<b>📋 Plan:</b> ${investment.plan.name}\n`;
+      }
+      if (investment.plan && investment.plan.interest) {
+        formattedMessage += `<b>💰 Interest:</b> ${investment.plan.interest}%\n`;
+      }
+      if (investment.plan && investment.plan.duration) {
+        formattedMessage += `<b>⏳ Duration:</b> ${investment.plan.duration} days\n`;
+      }
+      if (investment.amount) {
+        formattedMessage += `<b>💵 Amount:</b> ₹${investment.amount} INR\n`;
+      }
+      if (investment.transactionTime) {
+        formattedMessage += `<b>📅 Time:</b> ${new Date(
           investment.transactionTime
-        ).toLocaleString()}\n` +
-        `<b>⏳ Maturity:</b> ${new Date(
+        ).toLocaleString()}\n`;
+      }
+      if (investment.redemptionTime) {
+        formattedMessage += `<b>⏳ Maturity:</b> ${new Date(
           investment.redemptionTime
         ).toLocaleString()}\n\n`;
+      }
     });
 
     return formattedMessage;

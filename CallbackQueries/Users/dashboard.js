@@ -62,15 +62,15 @@ module.exports = async ({ userChatId, userState }) => {
 
   // Calculate total investment values
   const totalActiveInvestment = investments.active.reduce(
-    (sum, transaction) => sum + transaction.amount,
+    (sum, transaction) => sum + (transaction.amount || 0),
     0
   );
   const totalPendingInvestment = investments.pending.reduce(
-    (sum, transaction) => sum + transaction.amount,
+    (sum, transaction) => sum + (transaction.amount || 0),
     0
   );
   const totalFailedInvestment = investments.failed.reduce(
-    (sum, transaction) => sum + transaction.amount,
+    (sum, transaction) => sum + (transaction.amount || 0),
     0
   );
 
