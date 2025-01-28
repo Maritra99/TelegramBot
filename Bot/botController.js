@@ -11,7 +11,7 @@ const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin");
 
 const allowedGroups = [process.env.ERROR_GROUP, process.env.MESSAGE_GROUP];
 
-const handleTextmessage = async (msg) => {
+const handleTextMessage = async (msg) => {
   const messageText = extractDetails.getMessage(msg);
   const chatType = extractDetails.getChatType(msg);
   const groupName = extractDetails.getGroupName(msg);
@@ -29,11 +29,7 @@ const handleTextmessage = async (msg) => {
       return memberShipHelper.handleWithoutMemberShip(chatId);
     }
 
-    const args = {
-      userChatId: chatId,
-      messageText,
-    };
-
+    const args = { userChatId: chatId, messageText };
     if (messageText.startsWith("/")) {
       commandHandler(args);
     } else {
@@ -42,10 +38,10 @@ const handleTextmessage = async (msg) => {
   }
 };
 
-const handleCallBackQuery = async (callbackQuery) => {
+const handleCallbackQuery = async (callbackQuery) => {
   const { message: msg, data: callbackData, from: userDetails } = callbackQuery;
 
-  // acknowledge the query early to avoid timeOuts
+  // Acknowledge the query early to avoid timeOuts
   await botHelper.answerCallbackQuery(callbackQuery.id);
 
   // Extract necessary Details
@@ -54,10 +50,7 @@ const handleCallBackQuery = async (callbackQuery) => {
   const groupName = extractDetails.getGroupName(msg);
 
   // Create argument Object to pass to further method
-  const args = {
-    messageId,
-    userDetails,
-  };
+  const args = { messageId, userDetails };
 
   // Check if callback is coming from a group, group should be Admin's group
   if (chatType === "group" || chatType === "supergroup") {
@@ -121,25 +114,26 @@ const handleMyChatMember = (msg) => {
   const chat = msg.chat;
 
   if (chat.type === "group" || chat.type === "supergroup") {
-    notifyErrorToAdmin(
-      `Bot added to group: ${chat.title}\nGroup username: ${
-        chat.username || "No username (private group)"
-      }`
-    );
+    const groupMessage = `Bot added to group: ${chat.title}\nGroup username: ${
+      chat.username || "No username (private group)"
+    }`;
+
+    notifyErrorToAdmin(groupMessage);
   }
 };
 
 const handlePollingError = (error) => {
-  notifyErrorToAdmin(`Polling Error Occured: ${JSON.stringify(error)}`);
+  notifyErrorToAdmin(`Polling Error Occurred: ${JSON.stringify(error)}`);
 };
 
 const handleError = (error) => {
-  console.error(`Normal Error Occured: ${JSON.stringify(error)}`);
-  notifyErrorToAdmin(`Normal Error Occured: ${JSON.stringify(error)}`);
+  console.error(`Normal Error Occurred: ${JSON.stringify(error)}`);
+  notifyErrorToAdmin(`Normal Error Occurred: ${JSON.stringify(error)}`);
 };
 
-bot.on("text", catchAsyncError(handleTextmessage));
-bot.on("callback_query", catchAsyncError(handleCallBackQuery));
+// Event listeners
+bot.on("text", catchAsyncError(handleTextMessage));
+bot.on("callback_query", catchAsyncError(handleCallbackQuery));
 bot.on("my_chat_member", handleMyChatMember);
 bot.on("polling_error", handlePollingError);
 bot.on("error", handleError);
