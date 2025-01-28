@@ -54,7 +54,7 @@ module.exports = async ({ userChatId, userState }) => {
   });
 
   // Helper function to format transaction details in a card layout
-  const formatTransactions = (transactions, header, icon) => {
+  const formatTransactions = (transactions, header, icon, state) => {
     if (!transactions.length) return "";
     let formattedMessage = `<b>${icon} ${header}</b>\n`;
 
@@ -76,15 +76,17 @@ module.exports = async ({ userChatId, userState }) => {
       if (investment.amount) {
         formattedMessage += `<b>💵 Amount:</b> ₹${investment.amount} INR\n`;
       }
-      if (investment.transactionTime) {
-        formattedMessage += `<b>📅 Time:</b> ${new Date(
-          investment.transactionTime
-        ).toLocaleString()}\n`;
-      }
-      if (investment.redemptionTime) {
-        formattedMessage += `<b>⏳ Maturity:</b> ${new Date(
-          investment.redemptionTime
-        ).toLocaleString()}\n\n`;
+      if (state === "active") {
+        if (investment.transactionTime) {
+          formattedMessage += `<b>📅 Time:</b> ${new Date(
+            investment.transactionTime
+          ).toLocaleString()}\n`;
+        }
+        if (investment.redemptionTime) {
+          formattedMessage += `<b>⏳ Maturity:</b> ${new Date(
+            investment.redemptionTime
+          ).toLocaleString()}\n\n`;
+        }
       }
     });
 
@@ -93,9 +95,24 @@ module.exports = async ({ userChatId, userState }) => {
 
   // Generate transaction history
   const message =
-    formatTransactions(investments.active, "Active Investments", "✅") +
-    formatTransactions(investments.pending, "Pending Investments", "⏳") +
-    formatTransactions(investments.failed, "Failed Investments", "❌");
+    formatTransactions(
+      investments.active,
+      "Active Investments",
+      "✅",
+      "active"
+    ) +
+    formatTransactions(
+      investments.pending,
+      "Pending Investments",
+      "⏳",
+      "pending"
+    ) +
+    formatTransactions(
+      investments.failed,
+      "Failed Investments",
+      "❌",
+      "failed"
+    );
 
   // Send the transaction history to the user
   await botHelper.sendKeyboardToUser(
