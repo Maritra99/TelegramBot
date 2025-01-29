@@ -9,6 +9,15 @@ const PaymentStatus = (model.PaymentStatus = {
   FAILED: "FAILED",
 });
 
+schema.User = mongoose.Schema(
+  {
+    chatId: { type: String, unique: true },
+    name: { type: String },
+    referedBy: { type: String },
+  },
+  { timestamps: true, collection: "users" }
+);
+
 schema.UserState = mongoose.Schema(
   {
     chatId: {

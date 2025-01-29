@@ -14,7 +14,7 @@ keyboard.START_MESSAGE_KEYBOARD = [
   [{ text: "📅  View Plans", callback_data: "view_plans" }],
   [
     { text: "⚙️  Settings", callback_data: "settings" },
-    { text: "🔒  Privacy Policy", callback_data: "privacy_policy" },
+    { text: "🔒  Referral Stats", callback_data: "referral_stats" },
   ],
   [
     { text: "❓ FAQ", callback_data: "faq" },

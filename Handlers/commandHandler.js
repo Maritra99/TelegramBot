@@ -4,7 +4,7 @@ const userState = require("../Static/userState");
 
 module.exports = (args) => {
   const { messageText } = args;
-  const text = messageText.toLowerCase();
+  const text = String(messageText).split(" ")[0].toLowerCase();
 
   if (text === "/start") {
     args = {

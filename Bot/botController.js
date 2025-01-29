@@ -8,6 +8,7 @@ const catchAsyncError = require("../Error/catchAsyncError");
 const callbackHandlers = require("../Handlers/callbackhandlers");
 const extractChatIdAndCallbackData = require("../Utils/extractChatIdAndCallbackData");
 const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin");
+const userModel = require("../Model/userModel");
 
 const allowedGroups = [process.env.ERROR_GROUP, process.env.MESSAGE_GROUP];
 
@@ -15,21 +16,30 @@ const handleTextMessage = async (msg) => {
   const messageText = extractDetails.getMessage(msg);
   const chatType = extractDetails.getChatType(msg);
   const groupName = extractDetails.getGroupName(msg);
+  const chatId = extractDetails.getChatId(msg);
+  const name = extractDetails.getName(msg);
+  const referralCode = extractDetails.getReferralCode(messageText);
+  const referrerChatId = extractDetails.getReferrerChatId(referralCode);
+
+  // Save UserData With referral Id
+  await userModel.saveUserIfNotPresent(chatId, name, referrerChatId);
 
   if (chatType === "group" || chatType === "supergroup") {
     if (!allowedGroups.includes(groupName)) {
-      return;
+      return; // Ignore messages from unauthorized groups
     }
   } else if (chatType === "private") {
-    const chatId = extractDetails.getChatId(msg);
-
     const isMember = await memberShipHelper.checkMemberShip(chatId);
 
     if (!isMember) {
       return memberShipHelper.handleWithoutMemberShip(chatId);
     }
 
-    const args = { userChatId: chatId, messageText };
+    const args = {
+      userChatId: chatId,
+      messageText,
+    };
+
     if (messageText.startsWith("/")) {
       commandHandler(args);
     } else {
@@ -48,6 +58,7 @@ const handleCallbackQuery = async (callbackQuery) => {
   const messageId = extractDetails.getMessageId(msg);
   const chatType = extractDetails.getChatType(msg);
   const groupName = extractDetails.getGroupName(msg);
+  const chatId = extractDetails.getChatId(msg);
 
   // Create argument Object to pass to further method
   const args = { messageId, userDetails };
@@ -55,7 +66,7 @@ const handleCallbackQuery = async (callbackQuery) => {
   // Check if callback is coming from a group, group should be Admin's group
   if (chatType === "group" || chatType === "supergroup") {
     if (!allowedGroups.includes(groupName)) {
-      return;
+      return; // Ignore callback from unauthorized groups
     }
 
     const {
@@ -81,8 +92,6 @@ const handleCallbackQuery = async (callbackQuery) => {
     }
     // If callback is coming from private chat process normally
   } else if (chatType === "private") {
-    const chatId = extractDetails.getChatId(msg);
-
     const isMember = await memberShipHelper.checkMemberShip(chatId);
 
     if (!isMember) {

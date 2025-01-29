@@ -13,6 +13,7 @@ const paymentFailed = require("../CallbackQueries/Users/paymentFailed.js");
 const paymentSuccessAdmin = require("../CallbackQueries/Admin/paymentSuccessfulAdmin.js");
 const paymentFailedAdmin = require("../CallbackQueries/Admin/paymentFailedAdmin.js");
 const transactionHistory = require("../CallbackQueries/Users/transactionHistory.js");
+const referralHistory = require("../CallbackQueries/Users/referralHistory.js");
 const { notifyErrorToAdmin } = require("../Utils/notifyToAdmin.js");
 
 const callbackHandlers = {};
@@ -34,8 +35,8 @@ callbackHandlers.callbacks = {
   payment_successful: async (args) => await paymentSuccess(args),
   payment_failed: async (args) => await paymentFailed(args),
   transaction_history: async (args) => await transactionHistory(args),
+  referral_stats: async (args) => await referralHistory(args),
   // bonus_status,
-  // referral_stats,
 };
 
 callbackHandlers.AdminCallbacks = {
