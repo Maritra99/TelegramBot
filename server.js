@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { connectDB } = require("./DB/dbConnection.js");
+const { notifyErrorToAdmin } = require("./Utils/notifyToAdmin.js");
 connectDB();
 
 require("./Bot/botController");
@@ -18,4 +19,18 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is Running on port: ${PORT}`);
+});
+
+process.on("uncaughtException", (err) => {
+  notifyErrorToAdmin(JSON.stringify(`Uncaught Exception: ${err}`));
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  notifyErrorToAdmin(
+    JSON.stringify(
+      `Unhandled Rejection:\n\nReason: ${reason},\n\nPromise: ${promise}`
+    )
+  );
+  process.exit(1);
 });

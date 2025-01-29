@@ -92,6 +92,18 @@ const handleCallbackQuery = async (callbackQuery) => {
     }
     // If callback is coming from private chat process normally
   } else if (chatType === "private") {
+    //User Should be Present in DB.
+    const existingUser = await userModel.findByChatID(chatId);
+
+    if (!existingUser) {
+      // notify to admin
+      notifyErrorToAdmin("User is not Present in DB");
+      return botHelper.sendMessageToUser(
+        chatId,
+        "Oops! U are not present in DB. 🤔"
+      );
+    }
+
     const isMember = await memberShipHelper.checkMemberShip(chatId);
 
     if (!isMember) {

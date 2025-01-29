@@ -16,23 +16,23 @@ extractDetails.getName = (msg) => {
 };
 
 extractDetails.getChatId = (msg) => {
-  return msg && msg.chat && msg.chat.id;
+  return msg && msg.chat && msg.chat.id && String(msg.chat.id);
 };
 
 extractDetails.getChatType = (msg) => {
-  return msg && msg.chat && msg.chat.type;
+  return msg && msg.chat && msg.chat.type && String(msg.chat.type);
 };
 
 extractDetails.getMessage = (msg) => {
-  return msg && msg.text;
+  return msg && msg.text && String(msg.text);
 };
 
 extractDetails.getMessageId = (msg) => {
-  return msg && msg.message_id;
+  return msg && msg.message_id && String(msg.message_id);
 };
 
 extractDetails.getGroupName = (msg) => {
-  return msg && msg.chat && msg.chat.title;
+  return msg && msg.chat && msg.chat.title && String(msg.chat.title);
 };
 
 extractDetails.getReferralCode = (msg) => {

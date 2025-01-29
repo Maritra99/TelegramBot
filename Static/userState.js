@@ -16,6 +16,7 @@ module.exports = {
   payment_successful: "PAYMENT_SUCCESSFUL",
   payment_failed: "PAYMENT_FAILED",
   transaction_history: "TRANSACTION_HISTORY",
+  referral_stats: "REFERRAL_STATS",
 
   // Message and Others......................
   start: "STARTING_BOT",
